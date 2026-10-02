@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Family Rosary</title>
+<meta name="description" content="A guided family rosary with daily mysteries and meditations for kids.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rosary">
+<meta name="theme-color" content="#FCF6EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#020614" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>html{background:#FCF6EE}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap">
+<style>
+/* Layout: one-screen app. Home scrolls above a fixed Begin/Continue foot; prayer mode = bead bar on top, one prayer centered, big Next at the thumb. */
+:root{
+  --teal:#096B82; --gold:#E5AD35; --rose:#C9767A;
+  --bg:#FCF6EE; --surface:#FFFDF9; --ink:#14353D; --muted:#5B6E71; --line:#E9DCCB;
+  --primary:var(--teal); --on-primary:#FFFDF9; --accent:var(--rose); --cta-bg:#FBEDE8;
+  --bead:#D8CCBC; --bead-on:var(--gold); --bead-done:var(--rose);
+  --h0:#ECE4D8; --h1:#F0C6C8; --h2:#D7878B; --h3:#A64C53;
+  --mantle:var(--teal); --stars:none; --stars-size:auto;
+  --scrim:rgba(20,53,61,.45);
+  --display:"Marcellus", "Trajan Pro", Georgia, serif;
+  --body:"Literata", Georgia, "Times New Roman", serif;
+  --scale:1;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#020614; --surface:#081128; --ink:#F7F2E8; --muted:#A9B4CC; --line:#152447;
+  --primary:#E2B65A; --on-primary:#020614; --accent:#A9C0EE; --cta-bg:#0A1634;
+  --bead:#1E3161; --bead-on:#E2B65A; --bead-done:#8FA9DD;
+  --h0:#0D1838; --h1:#6A3B49; --h2:#B66E79; --h3:#EFAAB0;
+  --mantle:#1B3B85; --scrim:rgba(2,6,20,.6);
+  --stars:radial-gradient(circle at 18% 22%, rgba(233,201,130,.55) 0 1px, transparent 1.6px), radial-gradient(circle at 63% 71%, rgba(255,255,255,.35) 0 .8px, transparent 1.4px), radial-gradient(circle at 82% 12%, rgba(233,201,130,.4) 0 1.2px, transparent 1.9px);
+  --stars-size:170px 170px, 230px 230px, 310px 310px;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#020614; --surface:#081128; --ink:#F7F2E8; --muted:#A9B4CC; --line:#152447;
+  --primary:#E2B65A; --on-primary:#020614; --accent:#A9C0EE; --cta-bg:#0A1634;
+  --bead:#1E3161; --bead-on:#E2B65A; --bead-done:#8FA9DD;
+  --h0:#0D1838; --h1:#6A3B49; --h2:#B66E79; --h3:#EFAAB0;
+  --mantle:#1B3B85; --scrim:rgba(2,6,20,.6);
+  --stars:radial-gradient(circle at 18% 22%, rgba(233,201,130,.55) 0 1px, transparent 1.6px), radial-gradient(circle at 63% 71%, rgba(255,255,255,.35) 0 .8px, transparent 1.4px), radial-gradient(circle at 82% 12%, rgba(233,201,130,.4) 0 1.2px, transparent 1.9px);
+  --stars-size:170px 170px, 230px 230px, 310px 310px;
+  color-scheme:dark }
+
+html,body{height:100%}
+body{background-color:var(--bg); background-image:var(--stars); background-size:var(--stars-size); color:var(--ink); font-family:var(--body); font-size:calc(19px * var(--scale)); line-height:1.6; -webkit-text-size-adjust:100%}
+*{box-sizing:border-box}
+button,select,input,textarea{font:inherit; color:inherit}
+button{cursor:pointer; -webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--gold); outline-offset:2px}
+.app{height:100%; display:flex; flex-direction:column; max-width:760px; margin:0 auto}
+.screen{flex:1; min-height:0; display:flex; flex-direction:column}
+.scroll{flex:1; min-height:0; overflow-y:auto; padding-inline:20px; padding-block:6px 28px}
+
+/* Guadalupe star band */
+.mantle{height:10px; flex:none; background:var(--mantle) radial-gradient(circle, var(--gold) 1.4px, transparent 1.8px) 0 0/22px 10px}
+
+/* Home */
+.topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; padding-inline:20px; padding-block:16px 4px}
+.brand{font-family:var(--display); font-weight:400; font-size:1.55rem; letter-spacing:.02em; color:var(--primary); margin:0}
+.gearbtn{width:44px; height:44px; flex:none; border:0; background:transparent; border-radius:50%; display:grid; place-items:center; color:var(--muted)}
+.gearbtn:hover{background:var(--surface)}
+.date{font-style:italic; font-size:.9rem; color:var(--muted); margin:0}
+.feast{display:flex; align-items:baseline; gap:10px; margin:6px 0 0; font-family:var(--display); font-size:1.15rem; line-height:1.35; text-wrap:balance}
+.feast svg{flex:none; width:12px; height:17px; color:var(--gold); transform:translateY(2px)}
+.home-stack{display:grid; gap:26px; margin-top:18px}
+.mysteries{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:18px 18px 16px}
+.mysteries h2{font-family:var(--display); font-weight:400; font-size:1.75rem; line-height:1.2; margin:0; color:var(--primary)}
+.mysteries ol{margin:10px 0 10px; padding-left:1.4em; font-size:.92em}
+.mysteries li::marker{color:var(--muted); font-size:.85em}
+.why{font-style:italic; font-size:.85rem; color:var(--muted); margin:0 0 12px}
+.chooser{display:flex; flex-wrap:wrap; gap:8px}
+.chip{border:1px solid var(--line); background:transparent; border-radius:999px; padding:6px 14px; font-size:.82rem; font-weight:600; min-height:40px}
+.chip[aria-pressed="true"]{background:var(--primary); color:var(--on-primary); border-color:var(--primary)}
+
+.picker{position:relative; display:grid; gap:2px; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:10px 48px 12px 16px}
+.pk-label{font-style:italic; font-size:.78rem; color:var(--muted)}
+.picker select{appearance:none; -webkit-appearance:none; border:0; background:transparent; padding:0; border-radius:0; font-family:var(--display); font-size:1.15rem; line-height:1.3; color:var(--primary); width:100%; min-width:0; cursor:pointer}
+.picker select:focus-visible{outline:none}
+.picker:focus-within{outline:3px solid var(--gold); outline-offset:2px}
+.mysteries .picker{background:var(--bg); border:1px solid color-mix(in srgb, var(--muted) 38%, transparent); border-radius:12px; padding:8px 36px 10px 14px}
+.mysteries .picker svg{right:12px}
+.mysteries ol{margin:10px 0 0}
+.picker svg{position:absolute; right:18px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none}
+.sec-h{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:0 0 10px}
+.sec-h h3{font-family:var(--display); font-weight:400; font-size:1.25rem; margin:0}
+.sec-h span{font-style:italic; font-size:.82rem; color:var(--muted); white-space:nowrap}
+
+/* Prayer-days heat map: columns are weeks, rows are Sun..Sat */
+.heat{display:grid; grid-template-columns:16px repeat(var(--weeks), minmax(0,1fr)); grid-template-rows:auto repeat(7, auto); gap:3px}
+.heat .mo{grid-row:1; font-size:.68rem; color:var(--muted); white-space:nowrap; line-height:1.4; overflow:visible}
+.heat .dl{grid-column:1; font-size:.62rem; color:var(--muted); line-height:1; align-self:center}
+.cell{aspect-ratio:1; width:100%; border:0; padding:0; border-radius:3px; background:var(--h0); min-width:0}
+.cell.l1{background:var(--h1)} .cell.l2{background:var(--h2)} .cell.l3{background:var(--h3)}
+.cell.today{box-shadow:0 0 0 1.5px var(--bg), 0 0 0 3px var(--gold)}
+.cell.future{visibility:hidden}
+.cell.sel{box-shadow:0 0 0 2px var(--ink)}
+.heat-foot{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:10px; flex-wrap:wrap}
+.daynote{font-size:.85rem; color:var(--muted); margin:0; min-height:1.4em; min-width:0}
+.legend{display:flex; align-items:center; gap:4px; font-size:.7rem; color:var(--muted)}
+.legend i{width:11px; height:11px; border-radius:2px; display:inline-block}
+
+.themes{display:grid; gap:8px}
+.theme{display:flex; align-items:center; justify-content:space-between; gap:12px; text-align:left; border:1px solid var(--line); background:var(--surface); border-radius:14px; padding:12px 14px; min-height:52px; font-size:1rem}
+.theme[aria-checked="true"]{border:2px solid var(--primary); padding:11px 13px}
+.theme .dot{width:20px; height:20px; border-radius:50%; border:2px solid var(--line); flex:none}
+.theme[aria-checked="true"] .dot{border:6px solid var(--primary)}
+
+.home-foot{flex:none; display:grid; gap:4px; padding-inline:20px; padding-block:12px 14px; border-top:1px solid var(--line); background:var(--bg)}
+.primary{width:100%; min-height:64px; border:0; border-radius:18px; background:var(--primary); color:var(--on-primary); font-family:var(--display); font-size:1.5rem; letter-spacing:.04em; display:grid; place-content:center; line-height:1.15; padding:8px 16px}
+.primary .sub{font-family:var(--body); font-size:.8rem; letter-spacing:0; opacity:.85; margin-top:3px}
+.primary:active{transform:translateY(1px)}
+.textbtn{border:0; background:transparent; min-height:44px; font-size:.9rem; color:var(--muted); text-decoration:underline; text-underline-offset:3px}
+
+/* Prayer mode */
+.pray-head{flex:none; display:flex; align-items:center; gap:10px; padding-inline:12px; padding-block:10px 4px}
+.beadwrap{flex:1; min-width:0; height:56px; position:relative; overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); mask-image:linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent)}
+.track{position:absolute; top:0; left:0; height:56px; display:flex; align-items:center; transition:transform .45s cubic-bezier(.3,.7,.2,1)}
+.track::before{content:""; position:absolute; left:28px; right:28px; top:50%; height:1.5px; background:var(--line)}
+.slot{width:56px; flex:none; display:grid; place-items:center; position:relative}
+.bead{border-radius:50%; background:var(--bead); transition:transform .3s, background .3s}
+.bead.s{width:15px; height:15px}
+.bead.l{width:24px; height:24px}
+.bead.medal{width:22px; height:28px; border-radius:45%; background:transparent; border:3px solid var(--bead)}
+.bead.done{background:var(--bead-done)}
+.bead.medal.done{background:transparent; border-color:var(--bead-done)}
+.bead.on{background:var(--bead-on); transform:scale(1.35); box-shadow:0 0 0 4px color-mix(in srgb, var(--gold) 28%, transparent)}
+.bead.medal.on{background:transparent; border-color:var(--gold)}
+.cross{width:22px; height:32px; color:var(--bead); transition:color .3s, transform .3s}
+.cross.on{color:var(--gold); transform:scale(1.2)}
+.pause{flex:none; border:1px solid var(--line); background:var(--surface); border-radius:999px; min-height:44px; padding:0 16px; font-size:.85rem; font-weight:600}
+.where{flex:none; text-align:center; font-size:.72rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:2px 0 0; min-height:1.3em}
+.prayer{flex:1; min-height:0; overflow-y:auto; padding-inline:22px; padding-block:18px 24px; display:flex; flex-direction:column}
+.prayer-inner{margin:auto 0; display:grid; gap:14px; max-width:34em; width:100%; align-self:center}
+.prayer-inner.enter{animation:enter .32s ease-out}
+@keyframes enter{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+.prayer h1{font-family:var(--display); font-weight:400; font-size:1.75rem; line-height:1.25; margin:0; color:var(--primary); text-wrap:balance}
+.kicker{font-style:italic; font-size:.95rem; color:var(--accent); margin:0}
+.text{font-size:1.12em; line-height:1.65; margin:0}
+.text p{margin:0 0 .7em}
+.parts{display:grid; gap:14px; font-size:1.12em; line-height:1.65}
+.part p{margin:0}
+.who{display:block; font-style:italic; font-size:.68em; color:var(--muted); margin-bottom:2px}
+.part.all{border-left:3px solid var(--accent); padding-left:14px}
+.part.all .who{color:var(--accent)}
+.vr{display:grid; gap:4px}
+.vr b{color:var(--accent); margin-right:6px}
+.note{font-size:.9rem; color:var(--muted); margin:0}
+.en-sub{font-style:italic; font-size:.9rem; color:var(--muted); margin:-8px 0 0}
+.en-under{border-top:1px solid var(--line); padding-top:12px; font-style:italic; color:var(--muted); font-size:.92em}
+.en-under p{margin:0 0 .6em}
+.meditation{font-size:1.02em; line-height:1.7; margin:0}
+.cta{background:var(--cta-bg); border-radius:14px; padding:14px 16px; margin:0; display:grid; gap:4px}
+.cta h2{font-family:var(--display); font-weight:400; font-size:1.1rem; color:var(--primary); margin:0}
+.ask{font-family:var(--display); font-weight:400; font-size:1.65rem; line-height:1.3; color:var(--ink); margin:0; text-wrap:balance}
+.saints{list-style:none; padding:0; margin:0; display:grid; gap:6px; font-size:1.1em}
+.count{display:flex; gap:9px; align-items:center; flex-wrap:wrap}
+.count i{width:10px; height:10px; border-radius:50%; background:var(--bead); transition:background .25s, transform .25s}
+.count i.done{background:var(--bead-done)}
+.count i.on{background:var(--gold); transform:scale(1.45)}
+.taphint{font-style:italic; font-size:.85rem; color:var(--muted); margin:0}
+.offered{font-style:italic; font-size:1.05rem; margin:0}
+.offered b{font-style:normal; font-weight:600}
+textarea.intent{min-height:76px}
+.week{display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; max-width:300px}
+.week div{display:grid; gap:4px; justify-items:center; font-size:.7rem; color:var(--muted)}
+.week .cell{border-radius:5px}
+.week .cell.new{animation:glow 1.1s ease-out .3s both}
+@keyframes glow{from{background:var(--h0); transform:scale(.6)} 60%{transform:scale(1.15)} to{transform:none}}
+.pray-foot{flex:none; display:grid; grid-template-columns:1fr 2.4fr; gap:10px; padding-inline:16px; padding-block:10px 16px; border-top:1px solid var(--line)}
+.back{min-height:64px; border:1px solid var(--line); background:var(--surface); border-radius:18px; font-weight:600; font-size:1rem}
+.back[disabled]{opacity:.4}
+
+/* Sheets */
+.sheet{position:fixed; inset:0; background:var(--scrim); display:flex; align-items:flex-end; justify-content:center; z-index:10}
+.sheet-card{background:var(--bg); width:100%; max-width:760px; border-radius:22px 22px 0 0; padding-inline:20px; padding-block:20px calc(20px + env(safe-area-inset-bottom, 0px)); display:grid; gap:12px}
+.sheet-card h2{font-family:var(--display); font-weight:400; margin:0; font-size:1.5rem}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.ghost{min-height:56px; border:1px solid var(--line); background:var(--surface); border-radius:16px; font-weight:600}
+.solid{min-height:56px; border:0; background:var(--primary); color:var(--on-primary); border-radius:16px; font-weight:600}
+
+.settings{position:fixed; inset:0; background:var(--bg); z-index:9; display:flex; flex-direction:column; max-width:760px; margin:0 auto; padding-block:env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 0px)}
+.settings .scroll{display:grid; gap:24px; align-content:start; padding-block:12px 28px}
+.group{display:grid; gap:10px}
+.group h3{font-size:.72rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0; border-bottom:1px solid var(--line); padding-bottom:6px}
+.opt{display:flex; align-items:center; justify-content:space-between; gap:14px; min-height:44px; font-size:1rem}
+.opt span{min-width:0}
+.opt small{display:block; color:var(--muted); font-size:.82rem}
+.switch{appearance:none; -webkit-appearance:none; width:52px; height:30px; border-radius:999px; background:var(--line); position:relative; flex:none; cursor:pointer; transition:background .2s}
+.switch::after{content:""; position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,.25); transition:left .2s}
+.switch:checked{background:var(--primary)}
+.switch:checked::after{left:25px}
+select,textarea,input[type=text]{width:100%; border:1px solid var(--line); background:var(--surface); border-radius:12px; padding:10px 12px; font-size:1rem}
+textarea{min-height:110px; resize:vertical}
+.sizes{display:flex; gap:8px; flex-wrap:wrap}
+.hint{font-size:.85rem; color:var(--muted); margin:0}
+.donebtn{border:0; background:var(--primary); color:var(--on-primary); border-radius:999px; min-height:44px; padding:0 18px; font-weight:600; font-size:.9rem}
+
+@media (prefers-reduced-motion: reduce){ .track,.bead,.cross,.count i{transition:none} .prayer-inner.enter,.week .cell.new{animation:none} }
+@media (min-width:700px){ .prayer h1{font-size:2.15rem} .text,.parts{font-size:1.2em} }
+</style>
+<style>html{background:var(--bg)}</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+/* ---------- Content ---------- */
+const P = {
+  sign:"In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+  creed:"I believe in God, the Father Almighty, Creator of heaven and earth; and in Jesus Christ, His only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried. He descended into hell; on the third day He rose again from the dead; He ascended into heaven, and is seated at the right hand of God, the Father Almighty; from there He shall come to judge the living and the dead.\n\nI believe in the Holy Spirit, the holy Catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen.",
+  ourFather:"Our Father, who art in heaven, hallowed be Thy name; Thy kingdom come, Thy will be done on earth as it is in heaven.\n\nGive us this day our daily bread, and forgive us our trespasses, as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen.",
+  hailMary:"Hail Mary, full of grace, the Lord is with thee. Blessed art thou among women, and blessed is the fruit of thy womb, Jesus.\n\nHoly Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.",
+  glory:"Glory be to the Father, and to the Son, and to the Holy Spirit.\n\nAs it was in the beginning, is now, and ever shall be, world without end. Amen.",
+  fatima:"O my Jesus, forgive us our sins, save us from the fires of hell, lead all souls to heaven, especially those in most need of Thy mercy.",
+  queen:"Hail, holy Queen, Mother of mercy, our life, our sweetness, and our hope. To thee do we cry, poor banished children of Eve. To thee do we send up our sighs, mourning and weeping in this valley of tears.\n\nTurn then, most gracious advocate, thine eyes of mercy toward us, and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary.",
+  letUsPray:"O God, whose only begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life; grant, we beseech Thee, that meditating upon these mysteries of the most holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen.",
+  michael:"Saint Michael the Archangel, defend us in battle. Be our protection against the wickedness and snares of the devil. May God rebuke him, we humbly pray; and do thou, O Prince of the heavenly hosts, by the power of God, cast into hell Satan and all the evil spirits who prowl about the world seeking the ruin of souls. Amen.",
+  memorare:"Remember, O most gracious Virgin Mary, that never was it known that anyone who fled to thy protection, implored thy help, or sought thine intercession was left unaided. Inspired by this confidence, I fly unto thee, O Virgin of virgins, my Mother. To thee do I come, before thee I stand, sinful and sorrowful. O Mother of the Word Incarnate, despise not my petitions, but in thy mercy hear and answer me. Amen."
+};
+
+/* Traditional Latin texts */
+const PL = {
+  sign:"In nomine Patris, et Filii, et Spiritus Sancti. Amen.",
+  creed:"Credo in Deum Patrem omnipotentem, Creatorem caeli et terrae. Et in Iesum Christum, Filium eius unicum, Dominum nostrum, qui conceptus est de Spiritu Sancto, natus ex Maria Virgine, passus sub Pontio Pilato, crucifixus, mortuus, et sepultus, descendit ad inferos, tertia die resurrexit a mortuis, ascendit ad caelos, sedet ad dexteram Dei Patris omnipotentis, inde venturus est iudicare vivos et mortuos.\n\nCredo in Spiritum Sanctum, sanctam Ecclesiam catholicam, sanctorum communionem, remissionem peccatorum, carnis resurrectionem, vitam aeternam. Amen.",
+  ourFather:"Pater noster, qui es in caelis, sanctificetur nomen tuum. Adveniat regnum tuum. Fiat voluntas tua, sicut in caelo et in terra.\n\nPanem nostrum quotidianum da nobis hodie, et dimitte nobis debita nostra, sicut et nos dimittimus debitoribus nostris. Et ne nos inducas in tentationem, sed libera nos a malo. Amen.",
+  hailMary:"Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus.\n\nSancta Maria, Mater Dei, ora pro nobis peccatoribus, nunc et in hora mortis nostrae. Amen.",
+  glory:"Gloria Patri, et Filio, et Spiritui Sancto.\n\nSicut erat in principio, et nunc, et semper, et in saecula saeculorum. Amen.",
+  fatima:"O mi Iesu, dimitte nobis debita nostra, libera nos ab igne inferni, conduc in caelum omnes animas, praesertim illas quae maxime indigent misericordia tua.",
+  queen:"Salve, Regina, Mater misericordiae, vita, dulcedo, et spes nostra, salve. Ad te clamamus, exsules filii Hevae. Ad te suspiramus, gementes et flentes in hac lacrimarum valle.\n\nEia, ergo, advocata nostra, illos tuos misericordes oculos ad nos converte. Et Iesum, benedictum fructum ventris tui, nobis post hoc exsilium ostende. O clemens, O pia, O dulcis Virgo Maria.",
+  letUsPray:"Deus, cuius Unigenitus per vitam, mortem et resurrectionem suam nobis salutis aeternae praemia comparavit, concede, quaesumus, ut haec mysteria sacratissimo beatae Mariae Virginis Rosario recolentes, et imitemur quod continent, et quod promittunt assequamur. Per eundem Christum Dominum nostrum. Amen.",
+  michael:"Sancte Michael Archangele, defende nos in proelio; contra nequitiam et insidias diaboli esto praesidium. Imperet illi Deus, supplices deprecamur; tuque, Princeps militiae caelestis, Satanam aliosque spiritus malignos, qui ad perditionem animarum pervagantur in mundo, divina virtute in infernum detrude. Amen.",
+  memorare:"Memorare, O piissima Virgo Maria, non esse auditum a saeculo, quemquam ad tua currentem praesidia, tua implorantem auxilia, tua petentem suffragia, esse derelictum. Ego tali animatus confidentia, ad te, Virgo virginum, Mater, curro, ad te venio, coram te gemens peccator assisto. Noli, Mater Verbi, verba mea despicere, sed audi propitia et exaudi. Amen."
+};
+const LT = {sign:"Signum Crucis", creed:"Symbolum Apostolorum", ourFather:"Pater Noster", hailMary:"Ave Maria", glory:"Gloria Patri",
+  fatima:"Oratio Fatimae", queen:"Salve Regina", letUsPray:"Oremus", michael:"Sancte Michael", memorare:"Memorare"};
+const keyOf = t => Object.keys(P).find(k => P[k]===t);
+
+const SETS = {
+  joyful:{name:"Joyful Mysteries", days:"Mondays and Saturdays", list:["The Annunciation","The Visitation","The Nativity","The Presentation in the Temple","The Finding of Jesus in the Temple"]},
+  luminous:{name:"Luminous Mysteries", days:"Thursdays", list:["The Baptism of Jesus","The Wedding at Cana","The Proclamation of the Kingdom","The Transfiguration","The Institution of the Eucharist"]},
+  sorrowful:{name:"Sorrowful Mysteries", days:"Tuesdays and Fridays", list:["The Agony in the Garden","The Scourging at the Pillar","The Crowning with Thorns","The Carrying of the Cross","The Crucifixion"]},
+  glorious:{name:"Glorious Mysteries", days:"Wednesdays and Sundays", list:["The Resurrection","The Ascension","The Descent of the Holy Spirit","The Assumption of Mary","The Coronation of Mary"]}
+};
+const SET_ORDER = ["joyful","luminous","sorrowful","glorious"];
+const BY_DAY = ["glorious","joyful","sorrowful","glorious","luminous","sorrowful","joyful"]; // Sun..Sat
+const ORD = ["First","Second","Third","Fourth","Fifth"];
+
+const THEMES = [
+  {id:"neighbor", name:"Loving Our Neighbor", med:{
+    joyful:[
+      "The angel Gabriel came to Mary with surprising news: God had chosen her to be the mother of Jesus. Mary said yes to God with her whole heart, even though she didn't know everything that would happen. Saying yes to God also meant saying yes to loving others, because Jesus came to love and save every person. God's love always comes to us so it can flow out to others. Every day, God gives us small chances to say yes to love: yes when Mom asks for help, yes when a brother or sister wants to play, yes when someone needs a friend. When we say yes like Mary, we make room for Jesus in our home.",
+      "Right after the angel's visit, Mary learned that her older cousin Elizabeth was going to have a baby too. Mary was expecting a baby herself, but she didn't stay home thinking about her own needs. She hurried over the hills to help Elizabeth and stayed for about three months. When Mary arrived, baby John leaped for joy inside Elizabeth! Mary brought Jesus with her wherever she went, and she brought Him to others through her kindness. When we go out of our way to help someone, like a neighbor, a grandparent, or a brother or sister, we carry Jesus to them too. Love doesn't wait to be asked; it hurries to help.",
+      "When it was time for Jesus to be born, Mary and Joseph traveled to Bethlehem, but there was no room for them at the inn. Jesus, the King of the whole world, was born in a stable and laid in a manger where animals ate. Poor shepherds came to visit Him, and later wise men came from far away. Jesus welcomed everyone, rich and poor, near and far. Sometimes we act like that crowded inn, with no room for someone who wants to play or talk with us. Jesus asks us to make room in our hearts and our home for everyone, especially people who feel left out. When we welcome others, we welcome Jesus.",
+      "When Jesus was a tiny baby, Mary and Joseph brought Him to the Temple to offer Him to God. There they met two very old people, Simeon and Anna, who had been waiting and praying for many years. Simeon held baby Jesus in his arms and thanked God, and Anna told everyone about Him. Mary and Joseph shared their precious baby with these elderly friends. The older people in our lives, like grandparents and elderly neighbors, are a gift from God. They have prayed and loved for a long time, and sometimes they feel forgotten. We love our neighbor when we visit them, listen to their stories, and share our joy with them.",
+      "When Jesus was twelve, His family went to Jerusalem for a feast. On the way home, Mary and Joseph realized Jesus was missing! They searched for three days and finally found Him in the Temple, listening to the teachers and asking questions. Mary told Him how worried they had been. Jesus explained that He needed to be in His Father's house, and then He went home with them and obeyed them. Even Jesus, God's own Son, loved His family by listening and obeying. This week, let's each choose one person in our family and do something kind for them every day without being asked, like making their bed, sharing a treat, or telling them something we love about them."
+    ],
+    luminous:[
+      "Jesus went to the Jordan River, where John the Baptist was baptizing people. Jesus had no sin to wash away, but He stepped into the water right alongside sinners and stood with them. When He came up out of the water, the Holy Spirit came down like a dove, and the Father's voice said that Jesus was His beloved Son. At our own baptism, God made each of us His beloved child too. That means every person in our family, and every neighbor, is someone God loves dearly. When we remember that, it's easier to treat each other with care. The next time we're upset with a brother or sister, we can remember that God calls them beloved too.",
+      "Jesus, Mary, and the disciples went to a wedding in the town of Cana. During the party, the hosts ran out of wine, which would have been very embarrassing for the new couple. Mary noticed and quietly told Jesus, then told the servants to do whatever He said. Jesus turned six large jars of water into the best wine anyone had tasted! Jesus cared about this family's happiness on their special day, and Mary cared enough to notice. Love pays attention. When we notice that someone is embarrassed, left out, or needs a hand, and we quietly help, we are loving like Jesus and Mary.",
+      "Jesus traveled from town to town, teaching that the Kingdom of God was near and calling people to turn away from sin. He healed the sick, welcomed children, ate with people others avoided, and forgave sinners. When someone asked Him who our neighbor is, He told the story of the Good Samaritan, a man who stopped to help a hurt stranger after others walked right by. Jesus taught that our neighbor is anyone who needs our help, even someone very different from us. God's Kingdom grows every time we love like this. In our home, it grows when we forgive quickly, share gladly, and treat each other the way we want to be treated.",
+      "Jesus took Peter, James, and John up a high mountain to pray. While He prayed, His face shone like the sun and His clothes became dazzling white. Moses and Elijah appeared and talked with Him, and the Father's voice told the disciples to listen to Jesus. For a moment, the disciples saw how glorious Jesus truly is. Then they had to go back down the mountain to ordinary life. We can't see it with our eyes, but every person we meet is made in God's image and is precious to Him. If we could see our brothers, sisters, and neighbors the way God sees them, we would treat each one with great love and respect.",
+      "On the night before He died, Jesus shared a special meal with His apostles. Before they ate, He knelt down and washed their feet, a job usually done by a servant, and told them to serve each other the same way. Then He took bread and wine and gave them His own Body and Blood, the gift we receive at Mass. Jesus gave us the Eucharist so He could stay with us always and make us one family in Him. He asked His friends to love one another just as He had loved them. This week, let's each look for a chance to serve like Jesus did, by doing a humble job nobody wants, like taking out the trash, cleaning up after dinner, or helping a neighbor without being asked."
+    ],
+    sorrowful:[
+      "On the night before He died, Jesus went to a garden to pray. He was very sad and afraid, because He knew how much He would suffer. He asked Peter, James, and John to stay awake and pray with Him, but they kept falling asleep. Even so, Jesus didn't give up on them. He prayed to His Father and accepted God's plan because He loved us so much. When someone we love is sad or having a hard day, we can stay close to them, the way Jesus hoped His friends would. Sometimes the best way to love is simply to be there, give a hug, and pray for them.",
+      "Soldiers tied Jesus to a pillar and whipped Him. Jesus had done nothing wrong, but He did not fight back or say mean things. He suffered quietly, because He loved even the people who were hurting Him. That is a very hard kind of love. When someone hurts us with words, pushes us, or takes our things, we want to hurt them back. Jesus shows us a better way: we can stop, take a breath, and choose not to repay hurt with hurt. Loving our neighbor sometimes means being gentle with someone who isn't being gentle with us.",
+      "The soldiers made a crown of thorns and pressed it onto Jesus' head. They put a purple robe on Him and laughed, pretending to bow to Him as a king. They were making fun of Him. Jesus really is the King of the whole world, but He let Himself be teased and treated as if He were nothing. Making fun of others hurts their hearts, and it hurts Jesus too, because He loves every person. In our family, we can be careful never to laugh at someone in a mean way or call them names. Instead, we can use our words to build each other up and remind each other how much God loves us.",
+      "Jesus had to carry His heavy cross through the streets to the hill where He would die. He was so weak that He fell. The soldiers made a man named Simon of Cyrene help Him carry it. Along the way, Jesus met His mother Mary, and a woman named Veronica wiped His face with her veil. Each of these people helped Jesus in a small way. Everyone around us carries some kind of cross: a brother or sister frustrated with schoolwork, a tired parent, a lonely neighbor. We can be like Simon and Veronica by helping carry each other's burdens, even in small ways.",
+      "Jesus was nailed to the cross, and after three hours He died for us. Even while He was suffering, Jesus kept loving. He asked His Father to forgive the people who crucified Him, and He promised the thief beside Him a place in Paradise. He also gave His mother Mary to John, and to all of us, to be our mother. Jesus showed us the greatest love there is by giving His whole life for others. We can give our time, our comfort, and our own way out of love for others too. This week, let's each find one way to put someone else first, like letting a brother or sister go first, giving up the best seat, or doing a hard chore so someone else doesn't have to."
+    ],
+    glorious:[
+      "On Easter morning, Jesus rose from the dead! Just a few days before, His friends had run away and left Him alone when He needed them most. Peter even said three times that he didn't know Jesus. When Jesus came back, He didn't scold them or stay angry. Instead, He greeted them with peace, ate breakfast with them by the sea, and gave Peter a fresh start by trusting him to care for His followers. In our family, we sometimes hurt each other with unkind words or by leaving someone out. Jesus shows us how to forgive, offer peace first, and give each other a fresh start.",
+      "Forty days after Easter, Jesus led His friends up a mountain and gave them one last job before going up to Heaven. He told them to go to every part of the world and share God's love with everyone. That's a big job! But Jesus also promised that He would be with them always. Jesus gives us that same job today. We don't have to travel far to start, because our first mission is right here at home, with our brothers and sisters, Mom and Dad. When we share our things, help clean up a mess we didn't make, or speak gently, we are doing Jesus' work.",
+      "After Jesus went to Heaven, the apostles and Mary waited and prayed together for nine days. Then a sound like a mighty wind filled the room, and tongues of fire rested on each of them. The Holy Spirit filled their hearts! Suddenly they were brave, and they went out and spoke to people from many countries. Amazingly, everyone heard them in their own language. The Holy Spirit helps people understand each other. When we get frustrated with a brother or sister, or feel like no one is listening, we can ask the Holy Spirit for patience and gentleness. He gives us what we need to love well, especially when it's hard.",
+      "When Mary's life on earth was finished, God took her body and soul into Heaven. Think about how Mary lived. When she learned her cousin Elizabeth was going to have a baby, she hurried over the hills to help her. At the wedding at Cana, she noticed the hosts had run out of wine before anyone else did, and she asked Jesus to help. Mary always noticed what others needed, and she didn't wait to be asked. We can be like Mary by keeping our eyes open. Does someone need help carrying something? Is someone sad or left out? Is there a neighbor who might be lonely?",
+      "Jesus crowned His mother Queen of Heaven and Earth. But Mary didn't become a queen by being bossy or wanting to be first. She always called herself God's servant. Jesus taught that in God's Kingdom, the greatest is the one who serves the most. Mary is now our Mother and Queen, and she loves every person, including our neighbors and people who are hard to love. As her children, we get to share in her love. This week, let's each choose one way to serve someone, like making a card, helping a neighbor with yard work, or doing a brother's or sister's chore as a surprise."
+    ]
+  }},
+  {id:"patience", name:"Patience", draft:true, med:{"joyful": ["For hundreds of years, God's people waited and prayed for the Savior God had promised. Generation after generation, they kept hoping and trusting, even when it seemed like nothing was happening. Then one day, the angel Gabriel came to Mary with the news that the long wait was almost over. God's timing is not always our timing, but God always keeps His promises. Waiting is hard, especially when we want something right now. Whether we're waiting for a turn, a treat, or an answer to our prayers, we can trust that God is working even when we can't see it. Patience means trusting God while we wait.", "Elizabeth had prayed for a baby for many, many years, and she was old by the time God answered her prayer. When Mary came to visit, Elizabeth was filled with the Holy Spirit and rejoiced. Mary stayed with her for about three months, patiently helping while both babies grew. Babies take nine whole months to grow, and no one can rush them! Some of the best things in life take time, like growing a garden, learning to read, or becoming a kind person. When we feel impatient with how slowly something is going, we can remember that God is growing something good.", "Mary and Joseph traveled a long way to Bethlehem, and when they arrived, there was no room at the inn. They could have complained or gotten angry, but they patiently accepted the stable they were given. That night, Jesus was born there, and a humble stable became the holiest place on earth. Sometimes things don't go the way we planned, and our first feeling is frustration. Mary and Joseph show us how to stay calm and trust God when plans change. God can make something beautiful out of our disappointments. When plans fall apart, let's take a breath and ask God what good He might be bringing.", "When Mary and Joseph brought Jesus to the Temple, they met Simeon and Anna. Simeon had been waiting his whole life to see the Savior, and Anna had prayed in the Temple day and night for many years. They didn't give up, even when they grew old. Finally, God let them see baby Jesus, and their hearts were filled with joy. Simeon and Anna teach us that patient prayer is never wasted. When we pray for something and the answer seems slow, we can keep praying like they did. God hears every prayer, and He answers at just the right time.", "When Jesus was missing, Mary and Joseph searched for Him for three long days. They must have been worried and tired, but they didn't give up, and they kept looking together. When they finally found Him in the Temple, Mary spoke to Him gently about how worried they had been. Then Jesus went home to Nazareth and lived quietly with them for many years before He began His public ministry. Even Jesus waited patiently for God's timing. This week, let's practice patience by waiting our turn without complaining, letting others finish talking before we speak, and saying a quick prayer whenever we feel ourselves getting frustrated."], "luminous": ["Before Jesus began His public ministry, He spent about thirty years living quietly in Nazareth. He worked as a carpenter with Joseph and helped His mother, and most people didn't know who He really was. Then, when the time was right, He went to the Jordan River to be baptized by John, and the Father announced that Jesus was His beloved Son. Jesus didn't rush. He waited for the moment His Father had chosen. We often want to grow up fast or do big things right away. Jesus shows us that the quiet years of learning, helping, and obeying at home are precious to God too.", "At the wedding in Cana, Mary noticed the wine had run out and told Jesus. Jesus said that His time had not yet come, but Mary trusted Him anyway and told the servants to do whatever He said. The servants filled six huge stone jars with water, which took a lot of time and work, without knowing what would happen. Then Jesus turned the water into wonderful wine. Mary and the servants were patient and trusting. Sometimes we have to do our part and wait without knowing how things will turn out. When we're patient and obedient, Jesus can do amazing things.", "When Jesus taught about God's Kingdom, He compared it to a tiny mustard seed that grows into a big plant, and to seeds that a farmer plants and waits for. A farmer can't make seeds grow faster by yelling at them! Jesus was also patient with His disciples, who often didn't understand what He was teaching. He explained things again and again without giving up on them. In our family, we're all still learning and growing. When a little brother or sister doesn't understand something, or makes the same mistake again, we can be patient with them like Jesus was with His disciples.", "On the mountain, Peter saw Jesus shining in glory with Moses and Elijah, and he wanted to stay there forever. He even offered to build tents so they could stay. But Jesus led them back down the mountain, because there was still work to do before the glory of Easter. Peter had to be patient and follow Jesus through hard days first. We all have moments we wish would last forever, and days we wish would hurry up and end. Patience means walking with Jesus through the ordinary days and the hard days too, trusting that He is leading us toward joy.", "At the Last Supper, Jesus gave us the gift of the Eucharist. Ever since then, He has waited for us in the tabernacle of every Catholic church, day and night. Jesus is so patient! He waits for us to come visit Him, to pray, and to receive Him at Mass. At Mass, we can practice patience too, by sitting still, listening, and waiting quietly. Patience is a way of showing love, because it gives others our time and attention. This week, let's practice patience by sitting still and listening during prayers and meals, and let's try to visit Jesus in the tabernacle together if we can."], "sorrowful": ["In the garden, Jesus asked His friends to stay awake and pray with Him. Three times He came back and found them sleeping. Jesus was sad, but He didn't yell at them or give up on them. He woke them gently and kept praying to His Father, accepting whatever God asked. Jesus was patient with His sleepy friends, even on the hardest night of His life. When we're tired, sad, or stressed, it's easy to snap at the people around us. Jesus shows us we can stay gentle and patient with others even when we're having a hard time ourselves.", "Jesus stood silently while the soldiers whipped Him. He didn't complain, argue, or fight back. He patiently endured the pain because He knew it would bring about our salvation. Patience isn't only waiting for good things; it also means bearing hard things without giving up. Sometimes we have to put up with things we don't like: a scraped knee, a long car ride, or a chore we don't enjoy. We can offer those little sufferings to Jesus and join them to His. When we do that with patience, even our small troubles become a gift of love to God.", "The soldiers mocked Jesus, pressed thorns into His head, and pretended to honor Him as a king. They kept teasing Him, and Jesus kept quiet. He didn't lose His temper or snap back at them. Patience helps us keep control of our tongue when others are bothering us. In a big family, someone is always going to be noisy, annoying, or in the way. When a brother or sister keeps bugging us, we can take a deep breath, ask Jesus for help, and answer gently instead of yelling. A patient answer can turn an argument into peace.", "Jesus carried His heavy cross step by step through the streets. It was a long, painful walk, and He fell more than once. But each time, He got back up and kept going. He didn't try to rush or quit; He just kept taking the next step. When something is hard, like learning math, practicing an instrument, or doing a big chore, we may want to give up. Patience means taking one step at a time and not giving up when we fall. Jesus walks with us, and He gives us the strength to take the next step.", "Jesus hung on the cross for three long hours. Even in terrible pain, He was patient and kind. He forgave His enemies, comforted the thief beside Him, and cared for His mother by giving her to John. He trusted His Father until the very end. Patience is really a kind of love: it puts others first and trusts God's plan. Jesus' patience on the cross shows us how great His love is. This week, let's each choose one thing that usually makes us impatient, like waiting for dinner or sharing the bathroom, and offer it up to Jesus with a smile instead of a complaint."], "glorious": ["After Jesus died, His friends had to wait three days, and those days were full of sadness and fear. They didn't understand yet what God was doing. Then on Easter morning, Jesus rose from the dead, and their sorrow turned to joy! God had a plan the whole time, even when it looked like everything had gone wrong. Sometimes we have to wait through sad or confusing times too. Easter reminds us that God always brings new life and joy in the end. When we're waiting for something hard to get better, we can hold on to hope, because Jesus is risen.", "When Jesus went up to Heaven, He told the apostles to wait in Jerusalem until the Holy Spirit came. They didn't know exactly when that would be, but they obeyed. Jesus also promised that He would come again in glory at the end of time. As Christians, we are waiting too, for Jesus to return and for Heaven. While we wait, we have work to do: loving God and loving each other. Being patient doesn't mean doing nothing. It means faithfully doing our part while we trust God with the rest.", "For nine days after Jesus went to Heaven, the apostles waited and prayed together with Mary. That was the very first novena! Then the Holy Spirit came down like fire and filled them with power. Patience is one of the fruits of the Holy Spirit, which means it grows in our hearts when we let the Holy Spirit work in us. We don't have to become patient all on our own. When we feel our temper rising, we can quietly pray, Come, Holy Spirit. He will help us stay calm and loving.", "Mary lived on earth for some time after Jesus went to Heaven. She missed her Son, but she patiently kept praying and helping the early Church, trusting that she would see Him again. When her life on earth was finished, God took her body and soul into Heaven, and she was with Jesus forever. Mary's whole life was full of patient trust: at the Annunciation, in Bethlehem, at the cross, and in the years after. She kept all these things in her heart and thought about them. We can ask Mary to help us be patient when we miss someone or when we're waiting for something good.", "Jesus crowned Mary Queen of Heaven and Earth. Her crown is a reward for a lifetime of patient faith, love, and trust. Mary never demanded her own way; she waited on God and said yes to His plans. God promises a crown of glory to everyone who stays faithful to Him. Every little act of patience is like a jewel we offer to God, and Mary, our Queen and Mother, is ready to help us. This week, let's each pick one person in our family we often get impatient with, ask Mary to help us, and practice speaking to that person gently every day."]}},
+  {id:"kindness", name:"Kindness", draft:true, med:{"joyful": ["When the angel Gabriel appeared to Mary, she was troubled at first. Gabriel spoke to her gently and told her not to be afraid, because God was pleased with her. God could have sent His Son in many ways, but He chose to ask a humble young woman gently, and He waited for her answer. God's messages always come with kindness. Kindness means speaking gently, especially when someone is scared or upset. When a little brother or sister is afraid of the dark or nervous about something new, we can be like Gabriel and speak calm, kind words. God uses our kindness to bring His peace.", "As soon as Mary heard that her older cousin Elizabeth was expecting a baby, she set out on a long journey through the hills to help her. When Elizabeth saw Mary, she was filled with joy, and baby John leaped inside her. Mary's kindness was practical: she helped Elizabeth with the work of the house and getting ready for the baby. Kindness isn't just nice feelings; it shows up in what we do. We can be kind by helping Mom carry groceries, setting the table, or playing with a younger sibling. Little acts of kindness bring joy, just like Mary's visit did.", "After Jesus was born, poor shepherds came to the stable to see Him. They were rough from working outside with sheep, and many people looked down on them. But they were welcomed to see the newborn King. Later, wise men came from far away, and they were welcomed too. Jesus' family was kind to everyone, no matter who they were. Sometimes we're kind only to people we like or who are like us. Jesus wants us to be kind to everyone, especially people others ignore or treat badly.", "When Mary and Joseph brought Jesus to the Temple, they were poor, so they offered two small birds instead of a lamb. God doesn't care how big our gifts are; He cares about our love. In the Temple, old Simeon came up to them, and Mary let him hold her precious baby. Simeon was so happy that he praised God. A small act of kindness can make someone's whole day. Holding a door, sharing a smile, or letting someone have a turn with something special can bring great joy. Let's look for little ways to be kind to the older people we meet.", "When Mary and Joseph finally found Jesus in the Temple, He was sitting with the teachers, listening and asking questions. Jesus listened respectfully to the older teachers, and when His parents came, Mary spoke to Him gently, even though she had been very worried. Kindness includes the way we listen and the way we speak, especially when we're upset. Then Jesus went home with His family and grew in wisdom and in favor with God and with people. Kind hearts grow when we practice kindness every day. This week, let's each do one secret act of kindness every day for someone in our family, without telling anyone it was us."], "luminous": ["Jesus walked to the Jordan River and stood in line with ordinary people to be baptized by John. He didn't ask for special treatment, even though He is the Son of God. John felt he wasn't worthy to baptize Jesus, but Jesus kindly asked him to go ahead, treating John with honor. Then the Holy Spirit came down like a gentle dove. A dove is a sign of peace and gentleness, and the Holy Spirit helps us be gentle and kind too. When we treat others with respect and don't act like we're better than anyone, we're following Jesus.", "At the wedding in Cana, Mary noticed that the hosts had run out of wine, and she didn't want the young couple to be embarrassed. She quietly asked Jesus to help, and He turned water into the best wine of the whole party. Most guests never even knew there had been a problem! Jesus and Mary were kind in a quiet way that protected the couple's feelings. Kindness pays attention to how others feel. We can be kind by not pointing out other people's mistakes in front of everyone and by quietly helping instead. Real kindness doesn't need to be noticed.", "Jesus spent His days being kind to people who needed Him. He touched people with leprosy when everyone else stayed away. He welcomed little children when the disciples tried to send them away. He noticed a poor widow giving her last coins, and a short man named Zacchaeus up in a tree. Jesus never thought anyone was too small or unimportant for His attention. He taught us to treat others the way we want to be treated. In our home, we can be kind like Jesus by noticing who needs attention and making them feel loved.", "On the mountain, Peter, James, and John saw Jesus shining with heavenly light, and they heard the Father's voice. They were so frightened that they fell to the ground. Jesus came over, touched them gently, and told them to get up and not be afraid. Even in His glory, Jesus was kind and gentle with His friends. Jesus is the most powerful person who ever lived, and He is also the kindest. Being strong and being kind go together. When we're bigger or stronger than someone, we should use that to help and protect them, never to scare them.", "At the Last Supper, Jesus got down on His knees and washed His disciples' dusty feet. That was a job for the lowest servant, but Jesus did it out of love. Then He gave them the greatest gift of all, His own Body and Blood in the Eucharist. Jesus told them to serve one another the way He had served them. Kindness often means doing humble, unseen jobs for others. Every time we receive Jesus, He fills us with His kindness so we can share it. This week, let's each serve someone in our family the way Jesus did, by helping with a job they don't like, such as putting away their laundry, wiping the table, or picking up their toys."], "sorrowful": ["In the garden, Jesus felt great sadness, and He asked His friends to stay with Him and pray. When soldiers came to arrest Him, Peter cut off a servant's ear with a sword. Jesus told Peter to stop, and then He touched the man's ear and healed him. Even while He was being arrested, Jesus was kind to someone who had come to take Him away. Kindness isn't only for people who are nice to us. Jesus shows us how to be kind even to people who are unkind to us. That is the hardest kindness, and the most like Jesus.", "The soldiers who whipped Jesus were cruel, and they hurt Him badly. Jesus endured it without saying unkind things in return. Jesus knows how much unkindness hurts. When we're unkind with our hands or our words, we hurt the people God loves. When we're kind, we help heal the hurt that sin has caused in the world. Every kind word is like a bandage on someone's heart. Let's ask Jesus to help us use our hands for helping and our words for healing.", "The soldiers laughed at Jesus, put a crown of thorns on His head, and mocked Him. Nobody stood up for Him. Jesus knows what it feels like to be made fun of and left alone. In our family and with our friends, we can be the ones who stand up for someone who is being teased. We can sit with the kid who's alone or say something kind to someone who's being laughed at. That's what Jesus would do, and that's what He hopes we'll do. Kindness sometimes takes courage.", "As Jesus carried His heavy cross, a woman named Veronica pushed through the crowd and gently wiped His face. It was a small act, but it took courage, and it comforted Jesus. A man named Simon also helped carry His cross. Jesus taught that whatever we do for the least of our brothers and sisters, we do for Him. Every time we're kind to someone who is struggling, we're like Veronica wiping Jesus' face. A tissue for a crying sibling or a glass of water for a tired parent can be just as loving. Let's keep our eyes open for people who need a little comfort.", "Even while Jesus was dying on the cross, He was thinking of others. He forgave the people who crucified Him, comforted the thief beside Him, and made sure His mother would be cared for by John. Jesus' last moments were full of kindness. He gave everything He had, His whole life, out of love for us. When we're tired, hurting, or upset, it's hard to think of others, but Jesus shows us that kindness is possible even in our hardest moments. This week, let's each make a card or note for someone outside our family, like a neighbor, a grandparent, or someone who is sick or lonely, and deliver it together."], "glorious": ["On Easter morning, Mary Magdalene was crying at the empty tomb because she thought someone had taken Jesus' body. Jesus came to her and gently called her by name. Instantly, her tears turned to joy! Jesus could have appeared first to powerful people, but He went to someone who was sad and needed comfort. Calling someone by name with love is a beautiful kindness. When someone is sad, we can go to them, say their name gently, and help them feel loved. Jesus is risen, and His kindness never ends.", "Before He went up to Heaven, Jesus lifted His hands and blessed His friends. His last act on earth was a blessing! Jesus promised that He would not leave us alone and that He was going to prepare a place for us. Now He asks us to keep doing the kind things He did. We are His hands and feet in the world. When we bless others with kind words and kind deeds, we continue Jesus' work. We can even bless each other at bedtime by making a little cross on each other's foreheads.", "When the Holy Spirit came at Pentecost, the apostles were filled with love and went out to share the good news. Soon the first Christians were sharing everything they had, so that no one among them was in need. People noticed how kindly the Christians treated each other, and many more joined the Church. Kindness is one of the fruits of the Holy Spirit. When we're kind, we show people what God is like. Others may come to know Jesus just by seeing how we treat each other. Let's ask the Holy Spirit to make our home a place full of kindness.", "Mary was taken body and soul into Heaven, but she didn't forget about us. All through history, Mary has come to help her children. When she appeared to Juan Diego as Our Lady of Guadalupe, she spoke to him tenderly, like a loving mother, and told him not to be troubled, because she was his mother. Mary's kindness is gentle and tender, and she cares about our smallest worries. We can talk to Mary about anything. And we can treat others with the same tenderness she shows us. Let's ask Mary to make our words as gentle as hers.", "Jesus crowned His mother Mary Queen of Heaven and Earth. Mary is a queen of kindness and mercy. She doesn't rule by bossing people around, but by loving and caring for each of her children. In God's Kingdom, the kind and humble are the greatest. Every time we choose kindness, we are acting like true sons and daughters of our Queen. This week, let's each choose one kind thing to do for a neighbor, like bringing them cookies, raking leaves, shoveling a walk, or just stopping to say hello and ask how they are."]}},
+  {id:"forgiveness", name:"Forgiveness", draft:true, med:{
+    joyful:[
+      "God sent the angel Gabriel to Mary because He had a plan to forgive the whole world. Ever since Adam and Eve disobeyed, sin had separated people from God. But God never stopped loving His children. He sent His own Son to be born of Mary so that our sins could be forgiven. When Mary said yes, God's great plan of mercy began. God doesn't wait for us to be perfect before He loves us; He comes to us first. When someone in our family hurts us, we can be like God and be the first to reach out with love.",
+      "When Mary visited her cousin Elizabeth, Elizabeth's husband Zechariah could not speak. He had doubted the angel's message, so God had made him unable to talk until his son was born. When baby John arrived, Zechariah trusted God and named him John, and his voice came back. He praised God, and his son grew up to prepare people's hearts to be forgiven. Zechariah made a mistake, but God gave him a second chance. Everyone in our family makes mistakes too. When someone says sorry, we can give them a second chance, just like God does.",
+      "Jesus came into the world as a tiny baby, born in a stable in Bethlehem. The angels told the shepherds that a Savior had been born. A Savior is someone who rescues us, and Jesus came to rescue us from sin. His very name means God saves. A baby is easy to love and easy to come close to, and God came that way so no one would be afraid to come to Him. When we make mistakes, we never need to hide from Jesus. We can run to Him, say sorry, and know He will forgive us.",
+      "Mary and Joseph brought baby Jesus to the Temple to offer Him to God. There, an old man named Simeon told Mary that a sword of sorrow would pierce her heart, because Jesus would suffer for us. Mary knew that loving Jesus would bring sorrow, and she trusted God anyway. Years later, she stood by the cross while Jesus prayed for the people who were hurting Him. Forgiving can hurt, especially when someone has hurt us a lot. But Mary shows us that a loving heart can stay close to God even when it's hard. When forgiving feels too hard, we can ask Mary to help us.",
+      "Jesus stayed behind in Jerusalem, and Mary and Joseph searched for Him for three days. When they found Him in the Temple, Mary told Him how worried they had been. Jesus hadn't done anything wrong, but His parents didn't understand at first, and they talked it through together with patience and love. Then Jesus went home with them and obeyed them, and the family stayed close. Even in a holy family, people can feel worried or confused. What matters is that we talk, listen, and stay close. This week, when someone in our family hurts us, let's practice saying I forgive you right away, and when we hurt someone, let's say I'm sorry and ask how we can make it right."
+    ],
+    luminous:[
+      "Crowds came to John the Baptist at the Jordan River to say they were sorry for their sins and be washed in the water. Jesus came too, even though He had no sins. He stood in line with sinners to show that He came to save them. At our own baptism, God washed away original sin and made us His children. And when we sin after baptism, Jesus gives us Confession, where we can be forgiven again and again. God never gets tired of forgiving us. Since God forgives us so many times, we can keep forgiving each other too.",
+      "At a wedding in Cana, the wine ran out, and the new couple was about to be embarrassed. Mary noticed and asked Jesus to help, and He turned water into wonderful wine. Jesus didn't scold anyone for planning badly. He simply fixed the problem with kindness and made the celebration even better. That's how Jesus treats our mistakes too: when we bring them to Him, He doesn't shame us; He brings something good out of them. In our family, we can treat each other's mistakes the same way. When someone spills, breaks, or forgets something, we can help fix it instead of making them feel bad.",
+      "Jesus traveled everywhere telling people that the Kingdom of God was near and inviting them to turn away from sin. He forgave a paralyzed man's sins and then healed him so he could walk. He told the story of the prodigal son, whose father ran to hug him when he came home after wasting everything. When Peter asked how many times he should forgive, Jesus taught him to forgive over and over, without counting. In the Our Father, we ask God to forgive us as we forgive others. That's a big promise to make every day! Let's ask Jesus to help us keep it in our home.",
+      "On a high mountain, Jesus shone with glory as bright as the sun, and Peter, James, and John saw Him talking with Moses and Elijah. Peter was there, the same Peter who would later say three times that he didn't know Jesus. Jesus already knew Peter would fail Him, but He brought him up the mountain anyway and showed him His glory. Jesus sees what we can become, not just the mistakes we make. When we forgive someone, we choose to see them the way Jesus does: as someone God is still making beautiful. So let's not hold on to old mistakes or keep reminding each other of them.",
+      "At the Last Supper, Jesus gave His apostles His Body and Blood. He knew Judas would betray Him and the others would run away that very night, yet He still washed their feet and shared this meal with them. Jesus told them His Blood would be poured out so that sins could be forgiven. Every Mass is a gift of forgiveness and love, and at the start of Mass we tell God we are sorry. Before we receive Jesus, we offer each other a sign of peace. This week, let's make peace before we go to bed each night: if anyone in our family is upset with someone, let's say sorry, forgive, and give a hug before the day ends."
+    ],
+    sorrowful:[
+      "In the garden, Jesus prayed so hard that His sweat became like drops of blood. He was carrying the weight of every sin, including ours. Then Judas came with soldiers and betrayed Jesus with a kiss. When Peter struck a servant with a sword and cut off his ear, Jesus told Peter to put the sword away, and He healed the man's ear. Jesus answered hate with healing. When someone is mean to us, we might want to strike back. Jesus shows us we can choose peace instead, and even do something kind for the person who hurt us.",
+      "Soldiers whipped Jesus, even though He had done nothing wrong. Jesus suffered for our sins so that we could be forgiven. That shows how serious sin is, and how much greater God's love is. Jesus forgave us so much more than anyone could ever owe us. When we remember that, it becomes easier to forgive the small things others do to us. A brother or sister who took our toy or said something unkind has done something small compared to all that Jesus has forgiven us. Let's remember His love whenever we feel like holding a grudge.",
+      "Soldiers pressed a crown of thorns onto Jesus' head, mocked Him, and spit on Him. Jesus is the true King, and He could have stopped them at any moment. Instead, He stayed silent and kept loving them. Being teased and laughed at hurts deeply, and it can make us want to get even. Jesus shows us that forgiving isn't pretending we weren't hurt. It means giving the hurt to God and deciding not to pay the other person back. When we've been teased, we can tell Jesus about it, and He will help our hearts heal.",
+      "Jesus carried His heavy cross through the crowded streets. Some people shouted at Him, and others just watched. He fell under the weight, but He got back up and kept going. Simon of Cyrene helped Him, and the women of Jerusalem wept for Him. Through all of it, Jesus never complained or blamed anyone. Sometimes saying sorry or forgiving feels like carrying something heavy. It's hard to go first, and sometimes we fall and need to try again. Like Jesus, we can keep getting back up and keep choosing to forgive.",
+      "Hanging on the cross, Jesus prayed for the very people who crucified Him, asking His Father to forgive them because they didn't know what they were doing. A thief beside Him said he was sorry, and Jesus promised him Paradise that same day. Even at the very end, Jesus was forgiving. No sin is too big for God's mercy when we are truly sorry. Jesus wants our family to be a place where forgiveness happens quickly and fully. This week, let's each think of someone we are still upset with, pray for them by name, and tell them we forgive them, or say sorry if we were the one who hurt them."
+    ],
+    glorious:[
+      "When Jesus rose from the dead, He came back to the same friends who had abandoned Him. He didn't come with anger or punishment. He greeted them with peace and showed them His wounds. Then He gave the apostles the power to forgive sins in His name, which is why priests can forgive our sins in Confession today. Later, Jesus asked Peter three times if he loved Him, once for each time Peter had denied Him, and gave him a fresh start. Jesus doesn't keep score of our failures. When we forgive, we can stop keeping score too and let each other start fresh.",
+      "Before Jesus went up to Heaven, He told the apostles to bring the good news of forgiveness to every nation. Forgiveness was the message He wanted the whole world to hear. Then He blessed them and rose into Heaven, where He is preparing a place for us. Heaven is a place of perfect peace, with no grudges and no hurt feelings. Every time we forgive, we bring a little bit of Heaven into our home. Jesus is waiting for us there, and He wants us to arrive together as a family.",
+      "The Holy Spirit came upon the apostles like tongues of fire. Peter, who had once denied Jesus out of fear, stood up bravely and told the crowd all about Jesus. He told them to turn away from their sins and be baptized so their sins could be forgiven, and about three thousand people were baptized that day! The Holy Spirit gives us the strength to do what we can't do alone. Sometimes we're too proud to say sorry, or too hurt to forgive. That's exactly when we can ask the Holy Spirit to fill our hearts and give us courage.",
+      "When Mary's life on earth was finished, God took her body and soul into Heaven. Mary never sinned, yet in the Hail, Holy Queen we call her the Mother of mercy. She loves sinners and prays for them constantly. In the Hail Mary, we ask her to pray for us sinners, now and at the hour of our death. Mary never gets tired of hearing from us or helping us come back to God. She shows us that the holiest heart is also the most merciful one. When we're tempted to look down on someone who did wrong, we can remember how gently Mary treats us.",
+      "Jesus crowned His mother Queen of Heaven and Earth. In the Hail, Holy Queen, we call her our advocate, which means someone who speaks up for us. A queen full of mercy doesn't punish or hold grudges; she pleads for her children. Mary asks Jesus to help us when we fail, and she wants us to treat each other with that same mercy. Our family can be a little kingdom of mercy, where mistakes are forgiven and no one is shamed. This week, let's go to Confession as a family if we can, and each night before bed, let's think about our day, tell God we're sorry for anything we did wrong, and forgive anyone who hurt us."
+    ]
+  }},
+  {id:"obedience", name:"Obeying Our Parents", draft:true, med:{"joyful": ["When the angel Gabriel told Mary God's plan, Mary said yes. She called herself the servant of the Lord and agreed to do whatever God asked. Mary didn't understand everything, but she trusted that God's plan was good. That is what obedience really is: saying yes to God because we trust that He loves us. God often speaks to children through their parents. When Mom or Dad asks us to do something, we can answer like Mary did, with a cheerful yes. Our obedience makes room for God to do great things.", "Elizabeth and her husband Zechariah were good people who followed God's commandments. When their son was born, they obeyed what the angel had told them and named him John, even though the neighbors expected a family name. Mary also obeyed God and carried Jesus to Elizabeth's home. Both families honored God by listening and obeying. Sometimes doing what is right isn't what others expect. We may be the only ones obeying while friends are doing something else. God blesses us when we choose to obey Him and our parents, even when it isn't popular.", "Mary and Joseph traveled to Bethlehem because the emperor ordered everyone to be counted in their family's hometown. It was a long, hard trip, especially for Mary, who was about to have a baby. But they obeyed, and that is how Jesus came to be born in Bethlehem, just as the prophets had foretold. God used their obedience to keep His promise. Sometimes we don't understand why we have to follow a rule. But obeying those in charge, like our parents and teachers, can be part of God's bigger plan for us. When we obey with a good attitude, we let God work through us.", "Forty days after Jesus was born, Mary and Joseph took Him to the Temple, just as God's law asked families to do with their firstborn son. They traveled to Jerusalem and offered a sacrifice. Mary and Joseph obeyed God's law carefully, even in small details. Because they were faithful, they met Simeon and Anna, who recognized Jesus as the Savior. Obedience in small things matters. When we make our bed, brush our teeth, and finish our schoolwork without being reminded, we're being faithful in little things. God sees our small acts of obedience and is pleased.", "When Jesus was twelve, Mary and Joseph found Him in the Temple after searching for three days. Jesus is the Son of God, wiser than any teacher, yet He went home to Nazareth and obeyed Mary and Joseph. For many years, He helped Joseph in the carpenter shop and helped His mother at home. If Jesus, who is God, obeyed His parents, we can do it too. The Fourth Commandment asks us to honor our father and mother. This week, let's practice first-time obedience: when Mom or Dad asks us to do something, let's say yes and do it right away, without arguing or complaining."], "luminous": ["Jesus went to the Jordan River to be baptized by John. John didn't think he should baptize Jesus, but Jesus explained that it was right, because it was what God wanted. Then the heavens opened, and the Father said He was pleased with His beloved Son. Jesus' whole life was about obeying His Father in Heaven. When we obey God, our Father in Heaven is pleased with us too. At our baptism, we became children of God. Children of God show their love by listening and obeying.", "At the wedding in Cana, Mary told the servants to do whatever Jesus told them. Jesus asked them to fill six large jars with water, which seemed like a strange request when what they needed was wine. But the servants obeyed without arguing. Because they obeyed, they got to see Jesus' very first miracle! Mary's advice to the servants is good advice for us too: do whatever Jesus tells you. Sometimes what our parents or God ask doesn't make sense to us right away. When we obey anyway, we often get to see something wonderful happen.", "Jesus taught that the people who truly love Him are the ones who hear God's word and keep it. He told a story about a wise man who built his house on rock and a foolish man who built on sand. When the storm came, the house on the rock stood strong. Obeying God is like building our lives on rock. Jesus also told a story about two sons: one said no to his father but then went and obeyed, and the other said yes but never went. Jesus wants our yes to be real. When we say we'll do something, let's actually do it.", "On the mountain, Peter, James, and John saw Jesus shining in glory. Then a cloud covered them, and the Father's voice told them that Jesus was His beloved Son and that they should listen to Him. Listening is the first part of obeying. We can't obey if we don't really hear what's being asked. Sometimes we're too busy, distracted, or stubborn to listen to God or to our parents. The Father's message is for us too: listen to Jesus. When we listen carefully, we can obey well.", "On the night before He died, Jesus washed His disciples' feet and gave them His Body and Blood in the Eucharist. He told them to do this in memory of Him, and the Church has obeyed that command ever since. Every Mass happens because the apostles and priests obeyed Jesus. Jesus also told His disciples that if they loved Him, they would keep His commandments. Obedience is how we show love. This week, let's make a family chart of jobs, and let's each try to do our jobs cheerfully every day without being reminded."], "sorrowful": ["In the Garden of Gethsemane, Jesus knew how much He was about to suffer, and He felt afraid. He prayed and asked His Father if there was any other way. But then He told His Father that He wanted the Father's will to be done, not His own. That was the hardest act of obedience ever, and Jesus did it out of love for us. Sometimes we don't want to obey, because what we're asked to do is hard or unpleasant. Like Jesus, we can tell God how we feel, and then choose to obey anyway. Obedience doesn't mean we never struggle; it means we trust God and our parents more than our feelings.", "Jesus was arrested and whipped, though He had done nothing wrong. He could have called armies of angels to rescue Him, but He obeyed His Father's plan. His obedience was not weakness; it was strength and love. Jesus obeyed all the way, even when it hurt. Our disobedience can hurt others and ourselves, but Jesus' obedience brought healing to the whole world. When we're tempted to disobey, let's remember how much Jesus' obedience cost Him. We can offer our small acts of obedience to comfort His heart.", "The soldiers mocked Jesus as a king. Jesus really is the King, but He came to serve and obey, not to be served. Pride makes us want to be the boss and do things our own way. When we argue with our parents, roll our eyes, or say we know better, that is pride. Jesus, the true King, shows us a different way: humility. Honoring our parents means speaking to them with respect, even when we disagree. Let's ask Jesus for a humble heart.", "Jesus carried His cross all the way to Calvary because it was His Father's will. He kept going step by step, even when He fell. He didn't stop halfway or take a shortcut. Obedience means finishing what we're asked to do, not just starting it. When we're asked to clean our room, obedience means cleaning the whole room, not just shoving things under the bed! Jesus gives us strength to finish well. Let's offer our hard jobs to Him and carry them all the way to the end.", "On the cross, Jesus finished the work His Father had given Him. He was obedient all the way to death on a cross. Even while dying, He honored His mother by making sure John would take care of her. Jesus perfectly obeyed His Father in Heaven and perfectly honored His mother on earth. His obedience opened Heaven for us. This week, let's honor Mom and Dad in a special way: each of us can thank them for something specific they do for our family, and do one thing to help them without being asked."], "glorious": ["Because Jesus obeyed His Father all the way to the cross, God raised Him from the dead on Easter morning. His obedience led to new life and glory! On Easter, the women went to the tomb, and an angel told them to go tell the disciples that Jesus was risen. They obeyed right away and ran with great joy. When we obey quickly and joyfully, like those women, we share in Jesus' Easter joy. Obedience isn't a heavy burden; it leads to life. God always blesses those who trust and obey Him.", "Before Jesus went up to Heaven, He gave His apostles a mission: go and make disciples of all nations, baptizing them and teaching them to obey everything He had commanded. He also told them to wait in Jerusalem for the Holy Spirit. The apostles obeyed both commands. They waited and prayed, and then they went out to the whole world. Because of their obedience, the faith was passed down for two thousand years, all the way to our family. When we learn our faith and obey God's commandments, we keep that chain going for the next generation.", "When the Holy Spirit came, the apostles were filled with courage. Later, when leaders ordered them to stop preaching about Jesus, Peter answered that they must obey God rather than people. Our first obedience always belongs to God. We obey our parents because God asks us to, and because good parents lead us toward God. The Holy Spirit gives us the strength to choose what's right, even when others pressure us to do wrong. Let's ask the Holy Spirit for courage to always obey God first. With His help, we can be brave and faithful.", "When Mary's life on earth was over, God took her body and soul into Heaven. Mary's whole life was one long yes to God, from the Annunciation to the foot of the cross. After Jesus, no one has ever obeyed God more perfectly. God honored her obedience by bringing her to Heaven in a special way. God promises to bless those who obey Him and honor their parents. When we follow Mary's example, we are walking the path to Heaven too. We can ask Mary to help us say yes to God every day.", "Jesus crowned His mother Queen of Heaven and Earth, giving her great honor. Jesus kept the Fourth Commandment perfectly: He honored His mother on earth, and He honors her forever in Heaven. When we honor Mary, we are imitating Jesus. And when we honor our own mothers and fathers, we are imitating Him too. Honoring parents means obeying them, respecting them, and caring for them, even when we're grown up. This week, let's surprise Mom and Dad with a special act of honor, like helping make them breakfast, writing them a letter, or praying a decade of the rosary just for them."]}},
+  {id:"sharing", name:"Generosity", draft:true, med:{"joyful": ["God gave the greatest gift of all when He sent His only Son to be born of Mary. God didn't keep His Son to Himself; He shared Him with the whole world. Mary was generous too. When the angel asked her to be the Mother of Jesus, she gave her whole life to God without holding anything back. Generosity starts with knowing that everything we have is a gift from God. Our toys, our home, our food, and even our family are gifts. When we remember that, it becomes easier to share what we've been given.", "Mary heard that her cousin Elizabeth was expecting a baby, and she went right away to help. She shared her time, her energy, and her love for three whole months. And she brought along the best gift of all: Jesus, growing inside her. Sharing isn't only about things. We can share our time by playing with a younger sibling, our energy by helping with chores, and our love by listening. The best thing we can share is Jesus, by being joyful and kind. Let's be generous with our time like Mary was.", "When Jesus was born, the shepherds came to see Him, and then they went and told everyone the good news. Later, wise men traveled from far away and brought gifts of gold, frankincense, and myrrh. They gave their best to the newborn King. When we give gifts to Jesus, we can give our best too: our best effort, our best attitude, and our best things. Sometimes we want to share only what we don't care about anymore. Generosity means sometimes giving away something we really like. Jesus gave us Himself, so we can give Him our best.", "When Mary and Joseph presented Jesus in the Temple, they offered two small birds, the offering of a poor family. They didn't have much, but they gave what they could. Later, Jesus praised a poor widow who put two tiny coins into the Temple offering, because she gave all she had. God doesn't measure our gifts by how big they are, but by how much love is in them. Even little children who don't have money can be generous. We can share a snack, give a hug, or offer our place in line. Every gift given with love is precious to God.", "When Jesus was twelve, He stayed in the Temple, His Father's house, sharing His wisdom with the teachers there. Everyone who heard Him was amazed. Then He went home with Mary and Joseph and shared His life with them in their humble home in Nazareth. Jesus shared His time, His work, and His love with His family every day for many years. Our family is the first place we learn to share. This week, let's each choose one thing we really like and share it with a brother or sister for a whole day, and let's look for one thing we can give to someone in need."], "luminous": ["When Jesus was baptized, the heavens opened and the Holy Spirit came down. At our own baptism, God generously gave us His grace, His life, and His Holy Spirit. We didn't earn it or pay for it; it was a free gift. John the Baptist taught people to be generous too. He told them that whoever had two coats should share with someone who had none, and whoever had food should do the same. When we receive so much from God, we want to share with others. Let's look at what we have and ask how we can share it.", "At the wedding in Cana, Jesus turned water into wine, and not just a little wine. He filled six large jars, more than enough for the whole party, and it was the very best wine! God is generous beyond what we can imagine. He doesn't give us just barely enough; He gives abundantly. When we share, we can be generous like Jesus, giving more than the bare minimum. If a sibling asks for some of our candy, we can give them a good piece, not the smallest one. Generous hearts make God smile.", "Once, a huge crowd followed Jesus to hear Him teach, and they got hungry. A boy shared his five loaves and two fish, and Jesus used them to feed more than five thousand people! There were even twelve baskets of leftovers. That boy didn't have much, but when he gave it to Jesus, it became a miracle. Jesus taught that it is more blessed to give than to receive. When we share even a little, Jesus can multiply it into something great. Let's never think our small gifts don't matter.", "On the mountain, Jesus shared His glory with Peter, James, and John. For a moment, they got to see how wonderful He truly is. Jesus didn't keep His glory hidden from His closest friends; He shared it to strengthen them for the hard days ahead. Jesus wants to share His glory with all of us in Heaven someday. Sharing good things makes them even better. When something exciting happens, we can share our joy. When someone else gets something good, we can be happy for them instead of jealous.", "At the Last Supper, Jesus took bread and wine and gave His apostles His own Body and Blood. He gave them not just something He had, but Himself. Every time we go to Mass, Jesus gives Himself to us completely in Holy Communion. There is no gift more generous than that. When we receive so much, our hearts should become generous too. This week, let's each set aside some of our own money or a favorite item to give to people in need, and let's bring it together as a family to church or to a food shelf."], "sorrowful": ["In the garden, Jesus offered Himself completely to His Father's will. He gave up His own comfort and His own wishes for our sake. Generosity sometimes means giving up what we want so someone else can have what they need. It might mean giving up the last cookie, the front seat, or the toy we wanted to play with. That can feel hard, like a little sacrifice. But every time we give generously, we become more like Jesus, who gave up everything for us. Let's ask Jesus to make our hearts generous.", "Jesus suffered terribly when the soldiers whipped Him, and He accepted that suffering for us. He didn't hold anything back; He gave His body for our salvation. Jesus' love is not stingy or careful; it is completely generous. Selfishness wants to keep everything for ourselves. Generosity remembers that what we have is a gift from God, meant to be shared. When we're tempted to be selfish, let's remember how freely Jesus gave Himself for us. A generous heart is a heart that looks like His.", "The soldiers dressed Jesus in a purple robe and gave Him a crown of thorns, mocking Him as a king. Jesus, the King of all creation, had given up everything for our sake. The world tells us that being important means having lots of stuff and being in charge. Jesus shows us that real greatness comes from giving, not taking. A generous heart doesn't need the best toys or the biggest piece to be happy. Real joy comes from loving and giving, not from having more. Let's be happy with what we have and generous with others.", "Simon of Cyrene was walking along when the soldiers made him help Jesus carry His cross. He didn't plan to help that day, but he shared Jesus' heavy load. Sometimes generosity means sharing someone else's burden, even when it interrupts our plans. When a parent is busy with the baby, or a sibling is struggling, we can step in and help. We can share our strength, our time, and our attention. Simon probably never forgot that he helped carry the cross of Jesus. Helping carry each other's crosses is one of the most generous things we can do.", "On the cross, Jesus gave everything: His body, His blood, His life, and even His own mother, whom He gave to us. He held nothing back. This is the most generous love the world has ever seen. Jesus gave His life so that we could have eternal life, and when we look at a crucifix, we see how much we are loved. Generosity is our way of loving Jesus back. This week, let's go through our toys and clothes together and choose some good ones, not just the old ones, to give to children who need them."], "glorious": ["When Jesus rose from the dead, He shared His joy and His peace with His friends. He didn't keep the good news to Himself. He appeared to Mary Magdalene, to the apostles, and to many others. Then He sent them out to share the good news with everyone. The joy of Easter is meant to be shared! When something good happens to us, we can share our happiness. And the best news we have to share is that Jesus is alive and loves everyone.", "Before Jesus went up to Heaven, He gave His apostles everything they needed to continue His work. He shared His mission with them and promised to send the Holy Spirit. Jesus trusted them with the most important job in the world. Generous people share responsibility and trust others. Older siblings can be generous by teaching younger ones how to do things, even if it's slower than doing it themselves. Sharing what we know is a wonderful gift. Let's help each other grow, like Jesus helped His apostles.", "When the Holy Spirit came at Pentecost, the first Christians became amazingly generous. They shared everything they had, and some even sold their land and houses to give to anyone in need. Nobody among them went without what they needed. The Holy Spirit fills our hearts with love, and love always wants to share. People noticed the early Christians because of how much they shared and cared for each other. Our family can show people what God's love looks like by being generous too. Let's ask the Holy Spirit to make our hearts open and giving.", "When Mary's life on earth ended, God took her body and soul into Heaven. Mary's whole life was a gift: she gave her yes to God, she gave Jesus to the world, and she gave her heart to every person. Even now, in Heaven, Mary keeps giving. She prays for us, helps us, and leads us to Jesus. A generous person's love keeps going and going. When we give our love freely, we become more like our heavenly Mother. We can ask Mary to make our hearts generous like hers.", "Jesus crowned His mother Queen of Heaven and Earth. Mary's crown is not a reward for being rich or powerful, but for loving and giving generously all her life. In God's Kingdom, the people who give the most are the greatest. Mary shares her treasures with us: her prayers, her love, and her Son. We are rich in God's eyes when we share what we have. This week, let's each pick a neighbor or friend and share something we made, like baked goods, a drawing, or flowers from the garden, to show them God's generous love."]}},
+  {id:"honesty", name:"Honesty", draft:true, med:{"joyful": ["When the angel Gabriel told Mary she would be the mother of Jesus, Mary didn't pretend she understood everything. She honestly asked the angel how this could happen. Gabriel explained that the Holy Spirit would come upon her, and Mary trusted God's answer. Mary's question wasn't doubt; it was honest trust. God wants us to be honest with Him too, about what we understand and what we don't. We never have to pretend with God. When we tell God and our parents the truth about our questions and feelings, we build trust.", "When Mary arrived at her cousin's house, Elizabeth spoke the truth that the Holy Spirit showed her: Mary was blessed, and the baby she carried was the Lord. Mary answered with a beautiful prayer of praise, telling the truth about how great God is and how He lifts up the humble. Both women spoke honestly about God's work. Honest words build each other up. When we tell the truth about the good things we see in others, it encourages them. Let's speak true and good words about God and about each other.", "When Jesus was born, the angels told the shepherds the truth: a Savior had been born in Bethlehem. The shepherds went and found everything just as the angels had said. Then they told others exactly what they had seen and heard. The shepherds were honest witnesses. Jesus later taught that He Himself is the Truth. Being honest means telling things the way they really happened, without adding to them or leaving out the parts that make us look bad. When we tell the truth, we honor Jesus.", "In the Temple, Simeon told Mary the truth about what would happen. He said that Jesus would bring salvation, but that a sword of sorrow would also pierce her heart. That was hard to hear, but Simeon was honest, and Mary treasured his words. Sometimes the truth is hard to say and hard to hear. But honest words, spoken with love, help us prepare and grow. When we need to tell someone a hard truth, we can say it gently and kindly. And when someone tells us a hard truth, we can listen with humble hearts.", "When Mary and Joseph found Jesus in the Temple, Mary honestly told Him how worried they had been. Jesus honestly explained that He needed to be in His Father's house. There were no secrets or lies between them, only honest words, and then the family went home together in peace. Families stay close when we tell each other the truth. When we've made a mistake, it's tempting to hide it or blame someone else. This week, let's practice telling the truth right away whenever we make a mistake, and let's thank each other whenever someone is brave enough to be honest."], "luminous": ["John the Baptist was known for telling the truth, even when people didn't want to hear it. When people asked if he was the Messiah, he honestly said no and told them someone greater was coming. When Jesus came to be baptized, John pointed to Him and told everyone that Jesus was the Lamb of God. John didn't try to take credit or make himself look important. Honesty sometimes means admitting that someone else is better at something or deserves the credit. When we're honest and humble, we point others to Jesus, just like John did. Let's give others the credit they deserve.", "At the wedding in Cana, when the wine ran out, Mary didn't hide the problem or pretend everything was fine. She told Jesus honestly what was wrong. Then Jesus fixed it with His first miracle. When we have a problem or make a mess, the best thing to do is tell the truth about it. Hiding problems usually makes them worse. When we're honest with our parents and with Jesus, they can help us. Let's never be afraid to say that we need help or that something went wrong.", "Jesus taught that our yes should mean yes and our no should mean no. In other words, people should be able to trust what we say without us having to make big promises. He also taught that the truth will set us free. Lies make us feel trapped and worried, because we have to keep remembering what we said. The truth lets us live in peace. Jesus praised a man named Nathanael because there was nothing false in him. Let's be people others can always trust.", "On the mountain, Jesus showed Peter, James, and John who He truly is: the glorious Son of God. Jesus never pretends to be something He isn't. He is always truthful about who He is. Sometimes we're tempted to pretend we're better than we are, or to brag about things that aren't quite true. Honesty means being real and showing people who we truly are. We don't have to pretend in order to be loved, because God loves us just as we are. Let's be real with each other and with God.", "At the Last Supper, Jesus took bread and said it was His Body, and He took wine and said it was His Blood. Because Jesus always tells the truth, we believe that the Eucharist truly is Jesus, even though it still looks like bread and wine. Jesus' words can always be trusted. When people learn they can trust our words, our relationships grow stronger. Every lie, even a small one, damages trust. This week, let's be a no-fibs family: let's each tell the truth even about small things, and if we slip, let's fix it right away by telling the truth."], "sorrowful": ["In the garden, Judas came with soldiers and greeted Jesus with a kiss. A kiss is supposed to show love, but Judas was using it to betray Jesus. That was a lie told with actions instead of words. Jesus answered Judas honestly, asking if he was betraying Him with a kiss. Honesty isn't just about our words; it's also about our actions. Pretending to be nice while secretly being unkind is a kind of lie. Let's make sure our actions and our hearts match.", "Jesus was arrested and beaten because people told lies about Him. False witnesses said things that weren't true, and Jesus suffered because of their lies. Lies can hurt people badly. When we lie about a brother or sister to get them in trouble, we're doing something like those false witnesses did. It may seem small, but it hurts. Jesus suffered silently for the truth. Let's always tell the truth about each other, even when it means we get in trouble instead.", "When Pilate questioned Jesus, Jesus told him the truth: He is a King, and He came into the world to speak the truth. Pilate asked what truth is, and then let the soldiers crown Jesus with thorns and mock Him. Telling the truth cost Jesus a lot. Sometimes telling the truth costs us something too. We might get in trouble, or someone might laugh at us. But Jesus shows us that the truth is always worth it. Let's be brave enough to tell the truth even when it's hard.", "On the way to Calvary, Jesus met the women of Jerusalem who were weeping for Him. Even though He was suffering, Jesus spoke honestly to them and warned them that hard times were coming. Jesus cared enough to tell them the truth. Real friends tell us the truth, even when it's hard. Fibs and flattery might make someone feel good for a moment, but honest love helps them for a lifetime. Let's be the kind of brothers and sisters who love each other enough to be honest. Honesty spoken with love is a true gift.", "Above Jesus' head on the cross was a sign that said He was the King of the Jews. Some people wanted the sign changed, but Pilate refused, and so the sign told the truth. Jesus died for the truth, never once denying who He was. Peter, on the other hand, had said three times that night that he didn't know Jesus. But Peter wept and was sorry, and Jesus forgave him. If we've lied, it's never too late to tell the truth and be forgiven. This week, if any of us has a fib we've been hiding, let's tell the truth to Mom or Dad and say sorry, and let's go to Confession if we can."], "glorious": ["On Easter morning, the women found the tomb empty, and angels told them the truth: Jesus is risen! When the women told the apostles, at first they didn't believe it. Later, some people even spread a lie, saying the disciples had stolen Jesus' body. But the truth could not be hidden. Jesus appeared to His friends again and again, and they became witnesses to the truth. Lies may seem to win for a while, but the truth always wins in the end. When we tell the truth, we're standing on the winning side, with Jesus.", "Before Jesus went up to Heaven, He told His apostles that they would be His witnesses to the ends of the earth. A witness is someone who tells the truth about what they have seen. The apostles spent the rest of their lives telling the truth about Jesus, and many of them died rather than deny it. We are called to be witnesses too. We tell the truth about Jesus with our words and our lives. When people see that we're honest, they'll be more likely to believe us when we tell them about God.", "Jesus called the Holy Spirit the Spirit of Truth. At Pentecost, the Holy Spirit came upon the apostles, and they boldly spoke the truth about Jesus. Peter, who had once been too afraid to admit he knew Jesus, now stood in front of a huge crowd and told everyone the truth. The Holy Spirit turned Peter into a brave truth-teller! The same Holy Spirit has lived in us since our baptism. When we're scared to tell the truth, we can ask the Spirit of Truth to give us courage. He will help us be brave like Peter.", "The Church teaches that Mary was taken body and soul into Heaven. Mary's whole life was honest and pure. She never told a lie, and her words always matched her heart. She kept the truth about Jesus in her heart and thought about it often. Mary loves the truth because she loves Jesus, who is the Truth. When we're tempted to lie, we can ask Mary to help us. A pure heart and honest lips go together.", "Jesus crowned Mary Queen of Heaven and Earth. In Heaven, there are no lies, no secrets, and no pretending. Everything is honest and full of light. Mary, our Queen, wants to help us get ready for Heaven by living in the truth now. Honesty is like a light that keeps our home bright and peaceful, while lies make things dark and confusing. This week, let's thank anyone in our family who tells the truth when it's hard, and let's each try to go the whole week without telling even one small fib."]}},
+  {id:"gratitude", name:"Gratitude", draft:true, med:{"joyful": ["When the angel told Mary she would be the Mother of God, her heart was filled with gratitude. Soon after, she sang a beautiful prayer praising God for the great things He had done for her. Mary knew that every good thing she had came from God. Gratitude begins when we notice God's gifts. Every day, God gives us many gifts: our family, our food, our home, and our faith. It's easy to forget to say thank you. Let's be like Mary and praise God for all the great things He has done for us.", "When Mary arrived at Elizabeth's house, Elizabeth cried out with joy, and baby John leaped inside her. Mary answered with her beautiful prayer called the Magnificat, thanking God for His mercy and goodness. Two women, both expecting babies, praised God together. Gratitude spreads joy! When one person in a family says thank you, others start noticing their blessings too. We can make our home a place of thankfulness by saying thank you often. Let's thank God and thank each other every day.", "When Jesus was born, angels filled the sky, praising God and giving Him glory. The shepherds went back to their fields praising God for all they had seen and heard. Jesus was born in a poor stable, but the people around Him were full of thanks. Gratitude doesn't depend on having fancy things. Mary and Joseph had very little, but they had Jesus, and that was everything. When we have Jesus, we have every reason to be thankful. Let's thank God for the gift of Jesus every day.", "When Simeon held baby Jesus in the Temple, he thanked God with all his heart. He had waited his whole life, and now his prayer was answered. Anna, too, gave thanks to God and spoke about Jesus to everyone. Simeon and Anna remind us to thank God when our prayers are answered. Sometimes we pray hard for something, and when God answers, we forget to say thank you. Let's be people who remember. When God answers our prayers, let's thank Him right away.", "When Mary and Joseph found Jesus after three days of searching, imagine how grateful and relieved they felt! They had been so worried, and now their Son was safe. Often we don't realize how thankful we are for someone until we miss them. Our family is a precious gift, and so is each brother and sister. We shouldn't wait until something goes wrong to appreciate each other. This week, let's go around the dinner table each night and have everyone share one thing they're thankful for, including one thing they're thankful for about someone else in the family."], "luminous": ["When Jesus was baptized, the Father spoke from Heaven, saying how much He loved His Son. At our own baptism, God made us His beloved children too. That is the greatest gift we could ever receive! Many of us don't remember our baptism because we were babies. But we can still thank God for it every day. When we bless ourselves with holy water at church, we can remember our baptism and say a quiet thank you. Being a child of God is something to be grateful for always.", "At the wedding in Cana, Jesus turned water into wonderful wine. The head waiter was amazed and told the bridegroom that he had saved the best wine for last. Jesus' gift made the celebration even more joyful. Jesus loves to give good gifts. Sometimes we're so used to our blessings that we stop noticing them, like the water we drink every day. Gratitude helps us see that ordinary things are actually wonderful gifts. Let's try to notice the everyday miracles God gives us.", "Once, Jesus healed ten men who had a terrible skin disease called leprosy. All ten were healed, but only one came back to thank Him. Jesus asked where the other nine were. Jesus noticed who said thank you, and He was pleased with the one who came back. God has done so much for us, and He loves it when we come back to thank Him. Let's be like the one who returned, not the nine who forgot. Let's make thank you one of our favorite words.", "On the mountain, Peter saw Jesus shining in glory, and he was so happy that he said it was good for them to be there. Peter was grateful just to be with Jesus. Sometimes we focus so much on what we want that we forget to be thankful for where we are and who we are with. Being together as a family, praying the rosary right now, is a good thing. It's good for us to be here too! Let's thank God for this moment together and for the people sitting around us.", "At the Last Supper, Jesus took bread, gave thanks, and broke it. The word Eucharist actually means thanksgiving! Every Mass is the Church's great prayer of thanks to God. Even on the night before He died, Jesus gave thanks to His Father. If Jesus could give thanks on His hardest night, we can give thanks every day. This week, let's each write or draw a thank-you note for someone who helps us, like a priest, a grandparent, or a teacher, and let's spend a quiet moment thanking Jesus after Communion at Mass."], "sorrowful": ["In the garden, Jesus prayed in great sorrow, and He accepted the suffering His Father allowed. Even in His agony, Jesus trusted His Father's love. Gratitude isn't only for happy times. St. Paul teaches us to give thanks in all circumstances, because God is always with us. That doesn't mean we pretend to be happy when we're sad. It means we trust that God is still good and still working. When we're having a hard day, we can still find one thing to thank God for.", "Jesus suffered terribly when He was whipped, and He suffered it for us. We are saved because of what He endured. When we think about how much Jesus suffered, our hearts can't help but be grateful. It's easy to complain about little things, like a boring meal, a chore, or a rainy day. But when we remember what Jesus did for us, our complaints seem small. Let's turn our complaints into thank-yous. Instead of grumbling, let's thank Jesus for His love.", "The soldiers mocked Jesus by putting a crown of thorns on His head and a reed in His hand. They pretended He was a king, but He truly is the King of Kings! They didn't recognize the gift standing right in front of them. Sometimes we don't recognize the gifts right in front of us either, like our parents, our brothers and sisters, and our home. An ungrateful heart takes blessings for granted. Let's open our eyes to see how much God has given us, and let's thank Him for our family, even the people who sometimes bother us.", "When Jesus was struggling under the weight of His cross, Simon of Cyrene helped Him carry it, and Veronica wiped His face. These small kindnesses must have meant so much to Jesus. When someone helps us, it's important to notice and say thank you. Moms and dads do so many things for us every day: cooking, cleaning, teaching, driving, and caring for us. Often we don't even notice. Let's thank the people who help carry our burdens. A simple thank you can make someone's whole day.", "On the cross, Jesus gave His life for us. There is no greater gift than that. Whenever we look at a crucifix, we see proof of how much God loves us. The right response to such a great gift is a thankful heart that wants to love Jesus back. The best way to thank Jesus is to live for Him and love others the way He loves us. This week, let's start a family gratitude jar: every day, each of us will write or draw something we're thankful for and put it in the jar, and on Sunday we'll read them together."], "glorious": ["On Easter morning, Jesus rose from the dead! His friends' sorrow turned to joy and thanksgiving. Because Jesus is risen, death is not the end, and we have the hope of Heaven. Every Sunday is like a little Easter, a day to celebrate and thank God for the Resurrection. That's one reason we go to Mass on Sunday! Easter gratitude fills our hearts with joy. Let's thank Jesus for winning the victory over sin and death.", "Before Jesus went up to Heaven, He blessed His apostles. As He rose into the sky, they worshiped Him and returned to Jerusalem full of joy, praising God in the Temple. They were grateful for all that Jesus had done and for His promise to send the Holy Spirit. Praising God is a beautiful way to show our gratitude. We can praise God with songs, with prayers, and with joyful hearts. Even this rosary is a way of thanking God together. Let's be a family that praises God.", "When the Holy Spirit came at Pentecost, the apostles were filled with joy and began praising God in many languages. The Holy Spirit brings us many gifts, like wisdom, understanding, courage, and love. We didn't earn these gifts; God gives them freely. A grateful heart notices the Holy Spirit at work in our lives. When we feel brave, patient, or kind, that's often the Holy Spirit helping us. Let's thank the Holy Spirit for living in us and helping us grow. We can pray, Come, Holy Spirit, every day.", "When Mary's life on earth was finished, God took her body and soul into Heaven. All her life, Mary thanked God for His goodness, and now she praises Him face to face. Heaven is a place of never-ending gratitude and joy. When we practice gratitude on earth, we're getting ready for Heaven. A thankful heart is a happy heart. Let's ask Mary to help us have thankful hearts like hers. She will gladly help her children.", "Jesus crowned His mother Queen of Heaven and Earth. Mary didn't take the credit for herself; she always gave the glory to God. She knew that every good thing in her life was a gift. A grateful heart is humble, because it knows everything comes from God. Mary, our Queen, helps us thank God for all His gifts. This week, let's each thank God by name for three people and three things every night before bed, and let's thank Mary for being our Mother."]}},
+  {id:"selfcontrol", name:"Self-Control", draft:true, med:{"joyful": ["When the angel Gabriel appeared to Mary, she was surprised and a little troubled. But instead of panicking, she stayed calm and thought carefully about what the angel said. Then she asked a thoughtful question and listened to the answer. Mary had control over her feelings and her words. Self-control means we don't let our feelings take charge of us. When we feel surprised, scared, or upset, we can stop, breathe, and think before we act. Mary can help us be calm and thoughtful like her.", "When Mary arrived at Elizabeth's house, there was great excitement and joy. But Mary also stayed and helped for three months, doing ordinary work day after day. It takes self-control to keep helping when the exciting part is over and the work becomes routine. It's easy to start a job with energy, but harder to keep going when we get bored. Self-control helps us finish what we start. When we're tired of a chore or schoolwork, we can ask Mary to help us keep going faithfully.", "Joseph had a hard job when Jesus was born. He had to find a place for Mary, protect his family, and later lead them away to Egypt in the middle of the night. Joseph didn't complain or lose his temper. He stayed calm, listened to God, and did what needed to be done. Self-control helped Joseph take good care of his family. When things go wrong, losing our temper only makes it worse. Joseph shows us how to stay calm and do the next right thing.", "When Mary and Joseph presented Jesus in the Temple, Simeon told Mary that a sword of sorrow would pierce her heart. That was frightening news, but Mary didn't fall apart. She kept these words quietly in her heart and trusted God. Self-control includes how we handle bad news or disappointment. We might want to cry, yell, or stomp our feet. Feelings are okay, but we can learn to bring them to God and handle them calmly. Mary can teach us to be peaceful even when we're upset.", "When Jesus was twelve, He stayed in the Temple, and Mary and Joseph searched for Him for three days. When they found Him, Mary was surely relieved and maybe upset, but she spoke to Jesus calmly and told Him how worried they had been without yelling. Mary used self-control with her words, even after three stressful days. It's natural to feel upset, but we can choose to speak gently. Feelings come and go, but our words stay with people. This week, let's practice a family stop-and-breathe: whenever any of us feels angry, we'll stop, take three slow breaths, and quietly pray, Jesus, help me, before we speak."], "luminous": ["Right after His baptism, Jesus went into the desert for forty days to pray and fast. He ate nothing, and He was very hungry. Then the devil came and tempted Him to turn stones into bread. But Jesus said no, choosing to trust His Father instead of giving in. That's self-control! Lent, with its fasting, helps us practice saying no to ourselves so we can say yes to God. When we skip a treat or wait patiently for dinner, we grow stronger, like Jesus in the desert.", "At the wedding in Cana, Jesus provided wonderful wine for the celebration. Weddings are happy parties, and God loves when we celebrate! But even at parties, we need self-control. Good things like food, sweets, and fun are gifts from God, but too much of a good thing can make us feel sick or act silly. Self-control helps us enjoy God's gifts the right way. At the next party, we can enjoy ourselves while still being polite, sharing, and not taking more than our share. That's how we celebrate like Jesus.", "Jesus taught that what comes out of our mouths shows what is in our hearts. Angry words, mean words, and complaining words come from a heart that needs healing. Jesus taught us to be peacemakers and to stop anger before it grows. He even taught that if someone strikes us on one cheek, we should not strike back. That takes a lot of self-control! Our tongue is small, but it can do great good or great harm. Let's ask Jesus to help us control our words.", "On the mountain, Peter was so excited to see Jesus shining in glory that he started talking without really knowing what to say, offering to build tents. While he was still speaking, the Father's voice told them to listen to Jesus. Sometimes we're so eager to talk that we don't listen. Self-control helps us be quiet and listen, especially when someone else is talking. In a big family, everyone wants to talk at once! We can practice self-control by waiting our turn to speak and really listening.", "Before we receive Jesus in Holy Communion, the Church asks us to fast for one hour. That small sacrifice helps prepare our hearts for Jesus, who gave us Himself at the Last Supper. During Mass, we also practice self-control by sitting still, kneeling, and paying attention. These may seem like small things, but they train our hearts to love God more. Self-control is like a muscle that grows stronger every time we use it. This week, let's each give up one treat or some screen time each day and offer it to Jesus as a small gift of love."], "sorrowful": ["In the garden, Jesus felt great fear and sadness. He prayed so hard that His sweat was like drops of blood. His feelings were very strong, but He didn't let them control Him. He brought them to His Father in prayer and chose to do God's will. Self-control doesn't mean we never feel strong emotions. It means we bring our feelings to God and choose to do what's right. When we feel angry, scared, or upset, we can pray like Jesus did in the garden.", "When the soldiers whipped Jesus, He didn't cry out in anger or try to fight back. Jesus had perfect self-control, even in great pain. He could have stopped it at any time, but He chose to suffer for us. Self-control helps us handle pain and frustration without lashing out at others. When we stub a toe or someone bumps into us, we might want to yell or hit. Jesus shows us a better way. Let's ask Him for the strength to stay calm when we're hurting.", "The soldiers mocked Jesus, spit on Him, and laughed at Him. It would be very hard not to answer back! But Jesus stayed silent. His self-control was a sign of His great strength. Sometimes the strongest thing we can do is keep our mouths closed when we want to say something mean. When someone teases us, we don't have to tease back. We can be quiet, walk away, or answer kindly. That kind of self-control takes real strength.", "Carrying the heavy cross, Jesus was exhausted and in pain. He fell more than once, but each time, He got back up and kept going. Self-control helps us keep going when our bodies want to quit. When we're tired of practicing, studying, or doing chores, we can choose to finish instead of giving up. Jesus didn't give in to His tiredness; He kept walking because He loved us. Every time we choose to do the right thing when it's hard, we carry our cross with Jesus. Let's ask Him for strength when we feel like quitting.", "On the cross, people mocked Jesus and told Him to come down if He was really the Son of God. Jesus could have come down, but He stayed on the cross out of love for us. That was the greatest act of self-control in history. Jesus didn't do what was easy or what would prove Himself to others; He did what His Father asked. Self-control means doing what's right instead of what's easy. This week, let's each pick one habit we need to work on, like interrupting, grabbing, or whining, and let's help each other practice self-control with gentle, kind reminders."], "glorious": ["After His Resurrection, Jesus appeared to His apostles. Most of them had run away, and Peter had denied Him, so Jesus could have been upset with them. Instead, He calmly greeted them with peace. Jesus' calm heart made room for peace and forgiveness. When someone has upset us, our first reaction might be to say something sharp. But if we take a moment to calm down, we can respond with peace instead. Peace starts with a calm heart. Let's ask the risen Jesus to fill our hearts with His peace.", "Before Jesus went to Heaven, His apostles asked Him when He would restore the kingdom. Jesus told them it wasn't for them to know the times the Father had set. The apostles had to control their curiosity and trust God with the future. Then Jesus told them to wait in Jerusalem for the Holy Spirit. Waiting takes self-control! Sometimes we want to know everything or have everything right now. Self-control helps us trust God and wait for His timing.", "When the Holy Spirit came at Pentecost, He filled the apostles with His gifts. Self-control is one of the fruits of the Holy Spirit, which means we don't have to do it all on our own. When we feel like we can't control our temper, our words, or our wants, the Holy Spirit can help us. We just need to ask. Every time we pray, Come, Holy Spirit, He helps us grow stronger. Self-control grows in us like fruit on a tree, slowly but surely. Let's be patient as it grows.", "When Mary's life on earth was finished, God took her body and soul into Heaven. Mary lived her whole life with a calm, peaceful heart, fully united with God. She never let anger, greed, or selfishness take control. Her heart belonged completely to God. Self-control is about letting God be in charge of our hearts, instead of our feelings or wants. When we give our hearts to God, like Mary did, we become free and peaceful. Let's ask Mary to help us give our hearts to God every day.", "Jesus crowned Mary Queen of Heaven and Earth. A good queen rules wisely and calmly, and Mary ruled over her own heart long before she was crowned in Heaven. Self-control makes us rulers over ourselves, so our feelings and wants don't rule us. God wants each of us to grow into strong, calm, and wise people. With Mary's help, we can learn to rule our own hearts. This week, let's each choose one time every day to practice self-control on purpose, like waiting a few minutes before having a snack or putting away our toys before playing with something new."]}},
+  {id:"teamwork", name:"Working Together", draft:true, med:{"joyful": ["When the angel Gabriel came to Mary, she said yes to working with God on the greatest job in history: bringing Jesus into the world. God could have done it all by Himself, but He chose to work together with Mary. God loves to invite us to work with Him! Every day, God asks us to help Him by loving others and taking care of our family. Mary's yes was joyful and willing. When we're asked to help, we can answer with a cheerful yes like Mary's.", "When Mary heard her cousin Elizabeth was expecting a baby in her old age, Mary hurried to help her. Mary didn't wait to be asked, and she didn't help grumpily. She stayed for three months, cheerfully helping around the house and getting ready for the baby. Mary and Elizabeth worked together and shared their joy. Work is so much better when we do it together with a happy heart. Let's be quick and cheerful helpers like Mary. A cheerful helper makes any job lighter.", "Mary and Joseph worked together as a team to welcome Jesus. Joseph found shelter and made the stable as comfortable as he could. Mary cared for the baby, wrapping Him in cloths and laying Him in the manger. The shepherds and the angels had a part in that holy night too. Every person had a role, and together they welcomed Jesus. In our family, everyone has a part to play. When each of us does our part cheerfully, our home becomes a place where Jesus is welcome.", "Mary and Joseph traveled together to Jerusalem to present Jesus in the Temple. They worked as a team, sharing the journey and caring for their baby together. In the Temple, Simeon and Anna joined them, and together they praised God. God's plans often bring people together to help each other. No one has to do everything alone. When we work together as a family, every job becomes lighter. Let's remember that we're a team, and every member is important.", "When Jesus was missing, Mary and Joseph searched together for three days. They didn't blame each other; they worked as a team until they found Him. Then Jesus went home with them to Nazareth, where He helped Joseph in the carpenter shop and helped His mother around the house. The Holy Family worked together every day, cheerfully and lovingly. Ordinary work, done with love, is holy. This week, let's have a family work time where we all clean or do a project together, with music and smiles, and see how much faster it goes when we work as a team."], "luminous": ["When Jesus was baptized, the whole Holy Trinity was there together: the Father spoke, the Son was baptized, and the Holy Spirit came down like a dove. God Himself is a communion of three Persons who love each other perfectly. Our family is meant to reflect God's love. When we work together in harmony, we show the world a little picture of the Trinity. Arguing about whose turn it is or who did more work breaks that harmony. Let's work together in love, like the Father, Son, and Holy Spirit. Every helpful act makes our home more like Heaven.", "At the wedding in Cana, everyone worked together for the miracle. Mary noticed the problem and told Jesus. The servants filled the huge jars with water, which was hard work. And Jesus turned the water into wine. Jesus could have done it all alone, but He let the servants help. The servants did their part without complaining, even though they didn't know why. When we do our part cheerfully, God can do amazing things through our teamwork.", "Jesus didn't do His work alone. He chose twelve apostles and sent His disciples out two by two to preach and heal. He taught them to work together and help each other. When they argued about who was the greatest, Jesus taught them that the greatest is the one who serves. Teams work best when no one tries to be the boss and everyone tries to serve. In our family, we can stop arguing about who's in charge and start asking how we can help. A helpful heart makes a happy home.", "Jesus took Peter, James, and John up the mountain together. They prayed together and saw Jesus' glory together. Then they came back down, and a crowd was waiting, including a boy who needed healing. Jesus didn't stay on the mountain; He went straight back to helping people. After prayer comes work! Our prayer time together gives us strength to help each other cheerfully. Let's let our rosary tonight make us better helpers tomorrow.", "At the Last Supper, Jesus washed His apostles' feet. He did the lowliest job cheerfully, out of love. Then He gave them the Eucharist and told them to serve one another as He had served them. At Mass, we see people working together: the priest, the altar servers, the readers, the musicians, and everyone praying together. Each person has a part, and every part matters. This week, let's each choose a family job that we'll do every day with a smile and without complaining, and let's cheer each other on when we see someone helping cheerfully."], "sorrowful": ["In the garden, Jesus asked Peter, James, and John to stay awake and pray with Him, but they fell asleep. Jesus needed His friends' help, and they let Him down. Sometimes when our family needs us, we're tired or distracted or just don't feel like helping. Jesus knows how that feels. Let's try to stay alert to the needs of our family. When someone asks for help, let's be ready to answer, even when we're tired. Being there for each other is a way of watching and praying with Jesus.", "When Jesus was whipped, none of His friends were there to help Him. Being alone in suffering is very hard, and Jesus knows what it's like to need help and not get it. In our family, no one should have to struggle alone. When a brother or sister is overwhelmed with chores or schoolwork, we can offer to help. When Mom or Dad looks tired, we can pitch in without being asked. Let's make sure no one in our family ever feels alone. Together, we can carry anything.", "The soldiers worked together, but for something evil: mocking and hurting Jesus. Teamwork can be used for good or for bad. When kids team up to tease someone or leave someone out, that's teamwork going the wrong way. Jesus wants us to team up for good, to help, to include, and to build each other up. Let's never join in when others are being unkind. Instead, let's team up to protect and help those who are hurting. Together, we're stronger for doing good.", "When Jesus was struggling under the weight of His cross, the soldiers made Simon of Cyrene help carry it. Simon may not have wanted to help at first, but he did it anyway. Many believe that Simon and his sons later became followers of Jesus. Sometimes helping others changes us! We might not feel like helping at first, but when we do it, God blesses us. Carrying a heavy load together is always easier than carrying it alone. Let's be like Simon and share each other's burdens.", "At the foot of the cross, Mary, John, and a few faithful women stayed together with Jesus. They comforted each other and stayed with Him to the end. Jesus gave Mary to John and John to Mary, asking them to take care of each other, and from that day John took Mary into his home. Families are meant to stick together, especially in hard times. Jesus wants us to take care of each other too. This week, let's pair up in teams of two, a bigger kid with a littler kid, and help each other with chores, getting ready, and bedtime, the way John cared for Mary."], "glorious": ["On Easter morning, the women went to the tomb together to care for Jesus' body. They worked as a team, bringing spices and wondering together who would roll away the stone. When they found the tomb empty, they ran to tell the apostles. Then Peter and John raced to see the empty tomb for themselves. The first Easter was full of people working and running together! Good news is best shared together. Let's work and celebrate together as a family, especially on Sundays.", "Before Jesus went to Heaven, He gave the apostles a huge job: share the good news with the whole world. No one person could do it alone. They had to work together as one Church. Each apostle went to different places, but they were united in one mission. In our family, we each have different jobs, but we're one team. Some of us cook, some clean, some take care of the little ones, and some help with school. When we all do our part cheerfully, God's work gets done.", "When the Holy Spirit came at Pentecost, the apostles were all together in one place, praying with Mary. The Holy Spirit gives different gifts to different people. St. Paul later taught that the Church is like a body, with many parts working together. The eye needs the hand, and the hand needs the foot. In our family, each person has special gifts. Instead of being jealous of each other's gifts, we can use them together to help everyone. Let's thank the Holy Spirit for making us a team.", "When Mary's life on earth ended, God took her body and soul into Heaven. Mary spent her life cheerfully helping: helping Elizabeth, helping at Cana, and helping the apostles after Jesus went to Heaven. Even now in Heaven, Mary keeps helping us by praying for us. Mary never gets tired of helping her children. Her joy came from serving others with love. A cheerful helper makes everyone around them happier. We can ask Mary to help us be cheerful helpers too.", "Jesus crowned His mother Queen of Heaven and Earth. Mary was the most willing helper in all of God's plan. She always said yes, and she said it cheerfully. St. Paul taught that God loves people who give cheerfully. In God's Kingdom, the cheerful helpers are royalty! This week, let's choose a way to help someone outside our family together as a team, like helping a neighbor rake leaves, cleaning up at church, or bringing a meal to a family who needs one."]}}
+];
+
+/* Feast days: fixed dates (U.S. calendar). [month, day, name, intercession or ""] */
+const FIXED = [
+ [1,1,"Mary, the Holy Mother of God","Holy Mary, Mother of God, pray for us."],
+ [1,4,"St. Elizabeth Ann Seton","St. Elizabeth Ann Seton, pray for us."],
+ [1,5,"St. John Neumann","St. John Neumann, pray for us."],
+ [1,24,"St. Francis de Sales","St. Francis de Sales, pray for us."],
+ [1,25,"The Conversion of St. Paul","St. Paul, pray for us."],
+ [1,28,"St. Thomas Aquinas","St. Thomas Aquinas, pray for us."],
+ [1,31,"St. John Bosco","St. John Bosco, pray for us."],
+ [2,2,"The Presentation of the Lord",""],
+ [2,11,"Our Lady of Lourdes","Our Lady of Lourdes, pray for us."],
+ [2,14,"Sts. Cyril and Methodius","Sts. Cyril and Methodius, pray for us."],
+ [2,22,"The Chair of St. Peter","St. Peter, pray for us."],
+ [3,17,"St. Patrick","St. Patrick, pray for us."],
+ [3,19,"St. Joseph, Spouse of the Blessed Virgin Mary","St. Joseph, pray for us."],
+ [3,25,"The Annunciation of the Lord","Holy Mary, Mother of God, pray for us."],
+ [4,25,"St. Mark","St. Mark, pray for us."],
+ [4,29,"St. Catherine of Siena","St. Catherine of Siena, pray for us."],
+ [5,1,"St. Joseph the Worker","St. Joseph, pray for us."],
+ [5,13,"Our Lady of Fatima","Our Lady of Fatima, pray for us."],
+ [5,31,"The Visitation of the Blessed Virgin Mary","Holy Mary, Mother of God, pray for us."],
+ [6,13,"St. Anthony of Padua","St. Anthony, pray for us."],
+ [6,24,"The Nativity of St. John the Baptist","St. John the Baptist, pray for us."],
+ [6,29,"Sts. Peter and Paul","Sts. Peter and Paul, pray for us."],
+ [7,3,"St. Thomas the Apostle","St. Thomas, pray for us."],
+ [7,11,"St. Benedict","St. Benedict, pray for us."],
+ [7,14,"St. Kateri Tekakwitha","St. Kateri Tekakwitha, pray for us."],
+ [7,22,"St. Mary Magdalene","St. Mary Magdalene, pray for us."],
+ [7,25,"St. James","St. James, pray for us."],
+ [7,26,"Sts. Joachim and Anne","Sts. Joachim and Anne, pray for us."],
+ [7,31,"St. Ignatius of Loyola","St. Ignatius of Loyola, pray for us."],
+ [8,1,"St. Alphonsus Liguori","St. Alphonsus Liguori, pray for us."],
+ [8,4,"St. John Vianney","St. John Vianney, pray for us."],
+ [8,6,"The Transfiguration of the Lord",""],
+ [8,8,"St. Dominic","St. Dominic, pray for us."],
+ [8,10,"St. Lawrence","St. Lawrence, pray for us."],
+ [8,11,"St. Clare","St. Clare, pray for us."],
+ [8,14,"St. Maximilian Kolbe","St. Maximilian Kolbe, pray for us."],
+ [8,15,"The Assumption of the Blessed Virgin Mary","Holy Mary, Mother of God, pray for us."],
+ [8,22,"The Queenship of the Blessed Virgin Mary","Mary, Queen of Heaven, pray for us."],
+ [8,27,"St. Monica","St. Monica, pray for us."],
+ [8,28,"St. Augustine","St. Augustine, pray for us."],
+ [9,8,"The Nativity of the Blessed Virgin Mary","Holy Mary, Mother of God, pray for us."],
+ [9,14,"The Exaltation of the Holy Cross",""],
+ [9,15,"Our Lady of Sorrows","Our Lady of Sorrows, pray for us."],
+ [9,21,"St. Matthew","St. Matthew, pray for us."],
+ [9,23,"St. Pio of Pietrelcina","St. Pio, pray for us."],
+ [9,27,"St. Vincent de Paul","St. Vincent de Paul, pray for us."],
+ [9,29,"Sts. Michael, Gabriel, and Raphael","Sts. Michael, Gabriel, and Raphael, pray for us."],
+ [9,30,"St. Jerome","St. Jerome, pray for us."],
+ [10,1,"St. Thérèse of the Child Jesus","St. Thérèse, pray for us."],
+ [10,2,"The Holy Guardian Angels","Holy Guardian Angels, pray for us."],
+ [10,4,"St. Francis of Assisi","St. Francis of Assisi, pray for us."],
+ [10,7,"Our Lady of the Rosary","Our Lady of the Rosary, pray for us."],
+ [10,15,"St. Teresa of Jesus","St. Teresa of Ávila, pray for us."],
+ [10,18,"St. Luke","St. Luke, pray for us."],
+ [10,22,"St. John Paul II","St. John Paul II, pray for us."],
+ [10,28,"Sts. Simon and Jude","Sts. Simon and Jude, pray for us."],
+ [11,1,"All Saints","All you holy men and women, pray for us."],
+ [11,2,"All Souls",""],
+ [11,11,"St. Martin of Tours","St. Martin of Tours, pray for us."],
+ [11,13,"St. Frances Xavier Cabrini","St. Frances Xavier Cabrini, pray for us."],
+ [11,30,"St. Andrew","St. Andrew, pray for us."],
+ [12,3,"St. Francis Xavier","St. Francis Xavier, pray for us."],
+ [12,6,"St. Nicholas","St. Nicholas, pray for us."],
+ [12,8,"The Immaculate Conception","Mary, conceived without sin, pray for us who have recourse to thee."],
+ [12,12,"Our Lady of Guadalupe","Our Lady of Guadalupe, pray for us."],
+ [12,13,"St. Lucy","St. Lucy, pray for us."],
+ [12,25,"The Nativity of the Lord",""],
+ [12,26,"St. Stephen","St. Stephen, pray for us."],
+ [12,27,"St. John the Apostle","St. John, pray for us."],
+ [12,28,"The Holy Innocents","Holy Innocents, pray for us."]
+];
+
+const DEFAULT_SAINTS = ["St. Joseph","St. Michael the Archangel","Our Guardian Angels","St. Thérèse","St. Francis of Assisi","St. John Paul II"];
+
+/* ---------- Dates ---------- */
+const DAY = 864e5;
+const ymd = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const addDays = (d,n) => new Date(d.getFullYear(), d.getMonth(), d.getDate()+n);
+function easter(y){ // Anonymous Gregorian algorithm
+  const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),
+  h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+  mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1; return new Date(y,mo-1,da);
+}
+function adventStart(y){ const xmas=new Date(y,11,25); return addDays(xmas, -(xmas.getDay()||7) - 21); }
+function season(d){
+  const e=easter(d.getFullYear()), ash=addDays(e,-46), sat=addDays(e,-1);
+  if (d>=ash && d<=sat) return "lent";
+  const a=adventStart(d.getFullYear()); if (d>=a && d<new Date(d.getFullYear(),11,25)) return "advent";
+  return "ordinary";
+}
+function feastFor(d){
+  const y=d.getFullYear(), e=easter(y), t=ymd(d).getTime(), same=x=>ymd(x).getTime()===t;
+  const moving=[
+    [addDays(e,-46),"Ash Wednesday",""],[addDays(e,-7),"Palm Sunday",""],[addDays(e,-3),"Holy Thursday",""],
+    [addDays(e,-2),"Good Friday",""],[addDays(e,-1),"Holy Saturday",""],[e,"Easter Sunday",""],
+    [addDays(e,7),"Divine Mercy Sunday",""],[addDays(e,49),"Pentecost",""],[addDays(e,56),"The Most Holy Trinity",""],
+    [addDays(e,63),"The Most Holy Body and Blood of Christ",""],[addDays(e,68),"The Most Sacred Heart of Jesus",""],
+    [addDays(e,69),"The Immaculate Heart of Mary","Immaculate Heart of Mary, pray for us."],
+    [addDays(adventStart(y),-7),"Our Lord Jesus Christ, King of the Universe",""]
+  ];
+  for (const [dt,n,i] of moving) if (same(dt)) return {name:n, intercession:i};
+  const f=FIXED.find(x=>x[0]===d.getMonth()+1 && x[1]===d.getDate());
+  return f ? {name:f[2], intercession:f[3]} : null;
+}
+function autoSet(d, s){
+  const dow=d.getDay(), se=season(d);
+  if (se==="lent" && s.lent==="daily") return {set:"sorrowful", why:"Sorrowful every day during Lent"};
+  if (se==="lent" && s.lent==="sundays" && dow===0) return {set:"sorrowful", why:"Sorrowful on the Sundays of Lent"};
+  if (se==="advent" && s.advent==="daily") return {set:"joyful", why:"Joyful every day during Advent"};
+  if (se==="advent" && s.advent==="sundays" && dow===0) return {set:"joyful", why:"Joyful on the Sundays of Advent"};
+  return {set:BY_DAY[dow], why:"Prayed on "+SETS[BY_DAY[dow]].days};
+}
+
+
+/* ---------- Storage helpers ---------- */
+const store = {
+  get(k){ try{ const v=localStorage.getItem(k); return v ? JSON.parse(v) : null; }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+/* ---------- Settings (saved on this device) ---------- */
+const DEFAULTS = {sample:false, look:"auto", size:1, lang:"en", parts:true, lent:"daily", advent:"standard", pope:false, michael:true, memorare:false,
+  saints:Object.fromEntries(DEFAULT_SAINTS.map(n=>[n,false])), extraSaints:"", feastSaint:true, custom:"", theme:"neighbor"};
+let S = load();
+function load(){
+  const o = store.get("familyRosary.settings");
+  if (o){
+    if (o.look==null && "night" in o) o.look = o.night ? "night" : "auto";
+    delete o.night;
+    return {...DEFAULTS, ...o, saints:{...DEFAULTS.saints, ...(o.saints||{})}};
+  }
+  return structuredClone(DEFAULTS);
+}
+function save(){ store.set("familyRosary.settings", S); }
+function applyLook(){
+  const r = document.documentElement;
+  if (S.look==="auto") delete r.dataset.theme; else r.dataset.theme = S.look==="night" ? "dark" : "light";
+  r.style.setProperty("--scale", S.size);
+}
+
+/* ---------- Prayer history: this device, plus your claude.ai account when available ---------- */
+const HK = "familyRosary.history";
+let HIST = store.get(HK) || {};
+let daysCol = null;
+async function syncHistory(){
+  try{
+    if (!window.claude?.use) return;
+    const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+    if (!db || !user) return;
+    const uid = await user.id(); if (!uid) return;
+    daysCol = db.collection(`data/users/${uid}/days`);
+    const snap = await daysCol.get();
+    const remote = {};
+    snap.docs.forEach(d=>{ const v=d.data(); if (v) remote[d.id] = {n:Math.max(1, +v.n||1), intention:String(v.intention||"")}; });
+    let changed = false;
+    for (const [k,v] of Object.entries(remote)){
+      if (!HIST[k] || HIST[k].n < v.n){ HIST[k] = {n:v.n, intention:v.intention || HIST[k]?.intention || ""}; changed = true; }
+    }
+    for (const [k,v] of Object.entries(HIST)){
+      if (!remote[k] || remote[k].n < v.n) daysCol.doc(k).set({date:k, n:v.n, intention:v.intention||""}).catch(()=>{});
+    }
+    store.set(HK, HIST);
+    if (changed && document.getElementById("heat")) renderHeat();
+  }catch(e){}
+}
+function recordDay(intention){
+  const k = iso(new Date()), cur = HIST[k] || {n:0, intention:""};
+  const ints = [...new Set([cur.intention, intention.trim()].filter(Boolean))];
+  HIST[k] = {n:cur.n+1, intention:ints.join(" · ")};
+  store.set(HK, HIST);
+  daysCol?.doc(k).set({date:k, n:HIST[k].n, intention:HIST[k].intention}).catch(()=>{});
+}
+
+/* ---------- State ---------- */
+const today = ymd(new Date());
+let chosenSet = null; // null = automatic
+let steps = [], idx = 0, wake = null, run = null, shownKey = null;
+const RK = "familyRosary.resume";
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const paras = t => t.split(/\n\n+/).map(p=>`<p>${esc(p)}</p>`).join("");
+const crossPath = `<path d="M9 0h4v9h9v4h-9v19H9V13H0V9h9z" fill="currentColor"/>`;
+function getResume(){ const r = store.get(RK); return r && Date.now()-r.ts < 18*36e5 && SETS[r.set] ? r : null; }
+
+/* ---------- Home ---------- */
+function home(){
+  releaseWake(); run = null;
+  const auto = autoSet(today, S), set = chosenSet || auto.set, feast = feastFor(today), r = getResume();
+  const dateStr = today.toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric"});
+  app.innerHTML = `
+  <div class="mantle" aria-hidden="true"></div>
+  <div class="screen">
+    <div class="topbar"><h1 class="brand">Family Rosary</h1>
+      <button class="gearbtn" id="openSettings" aria-label="Settings">${gear()}</button></div>
+    <div class="scroll">
+      <p class="date">${esc(dateStr)}</p>
+      ${feast ? `<p class="feast"><svg viewBox="0 0 22 32" aria-hidden="true">${crossPath}</svg><span>${esc(feast.name)}</span></p>` : ""}
+      <div class="home-stack">
+        <section class="mysteries" aria-label="Today's mysteries">
+        <label class="picker" for="mset"><span class="pk-label">Mysteries</span>
+          <select id="mset"><option value="">${SETS[auto.set].name} · today</option>
+            ${SET_ORDER.map(k=>`<option value="${k}">${SETS[k].name}</option>`).join("")}</select>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg></label>
+          <ol>${SETS[set].list.map(m=>`<li>${esc(m)}</li>`).join("")}</ol>
+        </section>
+        <section aria-labelledby="dh">
+          <div class="sec-h"><h3 id="dh">Our prayer days</h3><span id="weekSum"></span></div>
+          <div id="heat"></div>
+          <div class="heat-foot"><p class="daynote" id="dayNote" aria-live="polite"></p>
+            <span class="legend" aria-hidden="true">1 <i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i> 3+</span></div>
+        </section>
+      </div>
+    </div>
+    <div class="home-foot">
+      ${r ? `<button class="primary" id="resume"><span>Continue</span><span class="sub">${esc(r.where || "Before we begin")}</span></button>
+             <button class="textbtn" id="fresh">Start over with ${esc(SETS[set].name)}</button>`
+          : `<button class="primary" id="begin">Begin</button>`}
+    </div>
+  </div>`;
+  renderHeat();
+  const ms = document.getElementById("mset"); ms.value = chosenSet || "";
+  ms.onchange = ()=>{ chosenSet = ms.value || null; const y=app.querySelector(".scroll").scrollTop; home(); app.querySelector(".scroll").scrollTop=y; };
+  document.getElementById("openSettings").onclick=settings;
+  if (r){
+    document.getElementById("resume").onclick=()=>begin(r.set, feast, r);
+    document.getElementById("fresh").onclick=()=>{ store.del(RK); begin(set, feast); };
+  } else document.getElementById("begin").onclick=()=>begin(set, feast);
+}
+const gear = () => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>`;
+
+/* ---------- Heat map: one square per day, columns are weeks ---------- */
+const WEEKS = 18, MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const lvl = n => n>=3 ? 3 : n;
+const dayLabel = d => d.toLocaleDateString(undefined,{weekday:"short", month:"short", day:"numeric"});
+/* Sample days for previewing the heat map. Built in memory only; never saved or synced. */
+const SAMPLE = (()=>{
+  const out = {}, ints = ["Grandma's health","our new neighbors","Dad's work","a safe trip","the souls in purgatory","our parish","peace in our home","a friend who is sick"];
+  let seed = 7; const rnd = () => (seed = (seed*9301 + 49297) % 233280) / 233280;
+  for (let i=0; i<WEEKS*7; i++){
+    const d = addDays(today, -i), wk = Math.floor(i/7);
+    const odds = wk<4 ? .85 : wk<9 ? .65 : wk<14 ? .45 : .3;
+    if (rnd() < odds){
+      const r = rnd(), n = d.getDay()===0 && r<.5 ? 2 : r<.06 ? 3 : r<.16 ? 2 : 1;
+      out[iso(d)] = {n, intention: rnd()<.7 ? ints[Math.floor(rnd()*ints.length)] : ""};
+    }
+  }
+  return out;
+})();
+const histData = () => S.sample ? SAMPLE : HIST;
+function dayText(k, d){
+  const h = histData()[k];
+  if (!h) return `${dayLabel(d)} · Not prayed`;
+  return `${dayLabel(d)} · ${h.n>1 ? h.n+" rosaries" : "Prayed"}${h.intention ? " for "+h.intention : ""}`;
+}
+function renderHeat(){
+  const host = document.getElementById("heat"); if (!host) return;
+  const start = addDays(today, -today.getDay() - (WEEKS-1)*7);
+  let html = "", total = 0, week = 0, labeled = -9;
+  for (let w=0; w<WEEKS; w++){
+    const first = addDays(start, w*7);
+    let firstOfMonth = -1;
+    for (let d=0; d<7; d++) if (addDays(first,d).getDate()===1) firstOfMonth = addDays(first,d).getMonth();
+    if (w===0 && firstOfMonth<0) firstOfMonth = first.getMonth();
+    if (firstOfMonth>=0 && w-labeled>=3 && w<=WEEKS-2){ html += `<span class="mo" style="grid-column:${w+2} / span 3">${MON[firstOfMonth]}</span>`; labeled = w; }
+    for (let d=0; d<7; d++){
+      const day = addDays(first,d), k = iso(day), n = histData()[k]?.n || 0, future = day>today, isToday = +day===+today;
+      if (!future) total += n;
+      if (w===WEEKS-1 && n) week++;
+      html += `<button class="cell l${lvl(n)}${isToday?" today":""}${future?" future":""}" style="grid-column:${w+2};grid-row:${d+2}" data-k="${k}" ${future?'tabindex="-1" aria-hidden="true"':`aria-label="${esc(dayText(k,day))}"`}></button>`;
+    }
+  }
+  ["","M","","W","","F",""].forEach((l,i)=>{ if(l) html += `<span class="dl" style="grid-row:${i+2}" aria-hidden="true">${l}</span>`; });
+  host.innerHTML = `<div class="heat" style="--weeks:${WEEKS}" role="group" aria-label="Days we prayed the rosary">${html}</div>`;
+  document.getElementById("weekSum").textContent = S.sample ? "Sample days" : week ? `${week} ${week===1?"day":"days"} this week` : "";
+  const note = document.getElementById("dayNote");
+  note.textContent = total ? `${total} ${total===1?"rosary":"rosaries"} prayed together since ${MON[start.getMonth()]}` : "Each day you finish the rosary fills a square.";
+  host.querySelectorAll(".cell:not(.future)").forEach(c=>c.onclick=()=>{
+    host.querySelectorAll(".cell.sel").forEach(x=>x.classList.remove("sel")); c.classList.add("sel");
+    const [y,m,d] = c.dataset.k.split("-").map(Number);
+    note.textContent = dayText(c.dataset.k, new Date(y,m-1,d));
+  });
+}
+
+/* ---------- Build the rosary ---------- */
+/* Beads: 0 crucifix, 1 large, 2-4 small, then per decade a large + 10 small, then the centerpiece medal. */
+const BEADS = (()=>{ const b=[{t:"c"},{t:"l"},{t:"s"},{t:"s"},{t:"s"}]; for(let d=0;d<5;d++){ b.push({t:"l"}); for(let i=0;i<10;i++) b.push({t:"s"}); } b.push({t:"m"}); return b; })();
+const decadeLarge = d => 5 + d*11;
+
+function begin(set, feast, resume){
+  const themeId = resume?.theme || S.theme;
+  const theme = THEMES.find(t=>t.id===themeId && t.med) || THEMES[0];
+  const st = [];
+  const add = (o) => st.push(o);
+  add({kind:"intention", bead:null, where:"Before we begin"});
+  add({kind:"theme", bead:null, where:"Before we begin"});
+  add({kind:"prayer", title:"Sign of the Cross", text:P.sign, bead:0, where:"Opening prayers"});
+  add({kind:"prayer", title:"Apostles' Creed", text:P.creed, bead:0, where:"Opening prayers"});
+  add({kind:"prayer", title:"Our Father", text:P.ourFather, bead:1, where:"Opening prayers"});
+  ["faith","hope","charity"].forEach((v,i)=>add({kind:"prayer", title:"Hail Mary", note:`For an increase of ${v}`, text:P.hailMary, bead:2+i, count:{i:i+1, of:3}, where:`Opening prayers · ${i+1} of 3`}));
+  add({kind:"prayer", title:"Glory Be", text:P.glory, bead:5, where:"Opening prayers"});
+  for (let d=0; d<5; d++){
+    const L = decadeLarge(d), w = `${ORD[d]} decade`;
+    add({kind:"mystery", d, set, bead:L, where:w});
+    add({kind:"prayer", title:"Our Father", text:P.ourFather, bead:L, where:w});
+    for (let i=0;i<10;i++) add({kind:"prayer", title:"Hail Mary", text:P.hailMary, bead:L+1+i, count:{i:i+1, of:10}, decade:d, where:`${w} · Hail Mary ${i+1} of 10`});
+    const next = d<4 ? decadeLarge(d+1) : BEADS.length-1;
+    add({kind:"prayer", title:"Glory Be", text:P.glory, bead:next, where:w});
+    add({kind:"prayer", title:"Fatima Prayer", text:P.fatima, bead:next, where:w});
+  }
+  const M = BEADS.length-1, cw = "Closing prayers";
+  add({kind:"queen", bead:M, where:cw});
+  add({kind:"prayer", title:"Let Us Pray", text:P.letUsPray, bead:M, where:cw});
+  if (S.pope){
+    add({kind:"prayer", title:"Our Father", note:"For the intentions of the Holy Father", text:P.ourFather, bead:M, where:cw});
+    add({kind:"prayer", title:"Hail Mary", note:"For the intentions of the Holy Father", text:P.hailMary, bead:M, where:cw});
+    add({kind:"prayer", title:"Glory Be", note:"For the intentions of the Holy Father", text:P.glory, bead:M, where:cw});
+  }
+  if (S.memorare) add({kind:"prayer", title:"The Memorare", text:P.memorare, bead:M, where:cw});
+  if (S.michael) add({kind:"prayer", title:"Prayer to St. Michael", text:P.michael, bead:M, where:cw});
+  const saints = [];
+  if (S.feastSaint && feast && feast.intercession) saints.push(feast.intercession);
+  Object.entries(S.saints).forEach(([n,on])=>{ if(on) saints.push(`${n}, pray for us.`); });
+  S.extraSaints.split("\n").map(x=>x.trim()).filter(Boolean).forEach(n=>saints.push(/pray for us/i.test(n)?n:`${n}, pray for us.`));
+  const uniq = [...new Set(saints)];
+  if (uniq.length) add({kind:"saints", list:uniq, bead:M, where:cw});
+  S.custom.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean).forEach(t=>add({kind:"prayer", title:"Our Family's Prayer", text:t, bead:M, where:cw}));
+  add({kind:"prayer", title:"Sign of the Cross", text:P.sign, bead:M, where:cw});
+  add({kind:"end", bead:null, where:"Amen"});
+  steps = st;
+  idx = resume ? Math.max(0, Math.min(resume.idx|0, st.length-2)) : 0;
+  run = {set, theme:theme.id, intention:resume?.intention || "", recorded:false};
+  pray(); requestWake(); saveResume();
+}
+function saveResume(){
+  if (!run) return;
+  if (steps[idx]?.kind==="end"){ store.del(RK); return; }
+  store.set(RK, {ts:Date.now(), set:run.set, theme:run.theme, idx, intention:run.intention, where:steps[idx]?.where || ""});
+}
+
+/* ---------- Prayer screen ---------- */
+function pray(){
+  shownKey = null;
+  app.innerHTML = `
+  <div class="mantle" aria-hidden="true"></div>
+  <div class="screen">
+    <div class="pray-head">
+      <div class="beadwrap" aria-hidden="true"><div class="track" id="track">${BEADS.map((b,i)=>`<div class="slot">${b.t==="c"?crossSvg(i):`<span class="bead ${b.t==="s"?"s":b.t==="l"?"l":"medal"}" data-i="${i}"></span>`}</div>`).join("")}</div></div>
+      <button class="pause" id="pause">Pause</button>
+    </div>
+    <p class="where" id="where" aria-live="polite"></p>
+    <div class="prayer" id="prayer"></div>
+    <div class="pray-foot">
+      <button class="back" id="back">Back</button>
+      <button class="primary" id="next">Next</button>
+    </div>
+  </div>`;
+  document.getElementById("pause").onclick=confirmPause;
+  document.getElementById("back").onclick=()=>go(-1);
+  document.getElementById("next").onclick=()=>go(1);
+  const pr = document.getElementById("prayer");
+  pr.addEventListener("click", e=>{
+    if (steps[idx].kind!=="prayer" || e.target.closest("textarea,input,button,a,select,label")) return;
+    if (String(window.getSelection?.() || "")) return;
+    store.set("familyRosary.tapped", true); go(1);
+  });
+  let t0 = null;
+  pr.addEventListener("touchstart", e=>{ const t=e.touches[0]; t0={x:t.clientX, y:t.clientY}; }, {passive:true});
+  pr.addEventListener("touchend", e=>{
+    if (!t0) return; const t=e.changedTouches[0], dx=t.clientX-t0.x, dy=t.clientY-t0.y; t0=null;
+    if (Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) go(dx<0 ? 1 : -1);
+  }, {passive:true});
+  renderStep(true);
+}
+const crossSvg = i => `<svg class="cross" data-i="${i}" viewBox="0 0 22 32">${crossPath}</svg>`;
+
+function go(n){
+  if (n>0 && idx===steps.length-1){ home(); return; }
+  const was = idx;
+  idx = Math.max(0, Math.min(steps.length-1, idx+n));
+  if (idx===was) return;
+  if (steps[idx].kind==="end" && !run.recorded){ run.recorded = true; recordDay(run.intention); }
+  saveResume();
+  renderStep(false);
+}
+
+function lastBeadBefore(i){ for(let k=i;k>=0;k--) if(steps[k].bead!=null) return steps[k].bead; return -1; }
+const stepKey = s => s.kind==="prayer" && s.count ? `${s.title}|${s.note||""}|${s.where.split(" · ")[0]}` : null;
+
+function positionTrack(first){
+  const s = steps[idx], cur = s.bead, done = cur==null ? lastBeadBefore(idx) : cur-1;
+  const wrap = document.querySelector(".beadwrap"), track = document.getElementById("track");
+  if (!wrap) return;
+  const focus = cur!=null ? cur : Math.max(0, done);
+  if (first){ track.style.transition="none"; requestAnimationFrame(()=>track.style.transition=""); }
+  track.style.transform = `translateX(${wrap.clientWidth/2 - (focus*56 + 28)}px)`;
+}
+
+function renderStep(first){
+  const s = steps[idx];
+  document.getElementById("where").textContent = s.where;
+  document.getElementById("back").disabled = idx===0;
+  document.getElementById("next").textContent = idx===steps.length-1 ? "Finish" : "Next";
+  const cur = s.bead, done = cur==null ? lastBeadBefore(idx) : cur-1;
+  document.querySelectorAll("#track [data-i]").forEach(el=>{
+    const i=+el.dataset.i; el.classList.toggle("on", i===cur); el.classList.toggle("done", i<=done && i!==cur);
+  });
+  positionTrack(first);
+  const key = stepKey(s), pr = document.getElementById("prayer");
+  if (key && key===shownKey && pr.querySelector(".count")){
+    updateCount(pr, s);
+  } else {
+    pr.innerHTML = `<div class="prayer-inner${first?"":" enter"}">${body(s)}</div>`;
+    pr.scrollTop = 0;
+    const ta = pr.querySelector("#intent");
+    if (ta) ta.oninput = e => { run.intention = e.target.value; saveResume(); };
+    const opts = pr.querySelectorAll(".theme");
+    opts.forEach(b=>b.onclick=()=>{ run.theme=b.dataset.themeId; S.theme=run.theme; save(); saveResume();
+      opts.forEach(x=>x.setAttribute("aria-checked", x===b)); });
+  }
+  shownKey = key;
+}
+function countHtml(c){ return `<div class="count" role="img" aria-label="Hail Mary ${c.i} of ${c.of}">${Array.from({length:c.of},(_,j)=>`<i class="${j+1<c.i?"done":j+1===c.i?"on":""}"></i>`).join("")}</div>`; }
+function updateCount(pr, s){
+  const box = pr.querySelector(".count");
+  box.setAttribute("aria-label", `Hail Mary ${s.count.i} of ${s.count.of}`);
+  box.querySelectorAll("i").forEach((el,j)=>{ el.className = j+1<s.count.i ? "done" : j+1===s.count.i ? "on" : ""; });
+  pr.querySelector(".taphint")?.remove();
+}
+
+const SPLIT = ["hailMary","ourFather","glory"];
+function prayerText(key, text){
+  const ps = text.split(/\n\n+/);
+  if (S.parts && SPLIT.includes(key) && ps.length===2)
+    return `<div class="parts"><div class="part"><span class="who">Leader</span><p>${esc(ps[0])}</p></div><div class="part all"><span class="who">All</span><p>${esc(ps[1])}</p></div></div>`;
+  return `<div class="text">${paras(text)}</div>`;
+}
+
+function body(s){
+  switch(s.kind){
+    case "intention": return `<p class="ask">Who are we praying for today?</p>
+      <label class="note" for="intent">Talk it over as a family. Write it here and we'll remember it at the end.</label>
+      <textarea id="intent" class="intent" rows="2" placeholder="Grandma's surgery, our new neighbors…">${esc(run.intention)}</textarea>`;
+    case "theme": return `<p class="ask">What would we like to reflect on as we pray the mysteries?</p>
+      <p class="note">Each mystery will include a short meditation on this for the kids.</p>
+      <div class="themes" role="radiogroup" aria-label="Meditation theme">${THEMES.map(t=>`<button class="theme" role="radio" data-theme-id="${t.id}" aria-checked="${run.theme===t.id}"><span>${esc(t.name)}</span><span class="dot" aria-hidden="true"></span></button>`).join("")}</div>`;
+    case "feast": return `<h1>${esc(s.feast.name)}</h1>
+      ${s.feast.intercession ? `<p class="text">${esc(s.feast.intercession)}</p>` : ""}`;
+    case "mystery": {
+      const th = THEMES.find(x=>x.id===run.theme && x.med) || THEMES[0];
+      const t = th.med[s.set][s.d], cut = s.d===4 ? t.indexOf("This week") : -1;
+      const main = cut>0 ? t.slice(0,cut).trim() : t, cta = cut>0 ? t.slice(cut) : "";
+      return `<p class="kicker">The ${ORD[s.d]} ${esc(SETS[s.set].name.replace(" Mysteries"," Mystery"))}</p>
+        <h1>${esc(SETS[s.set].list[s.d])}</h1>
+        <p class="meditation">${esc(main)}</p>
+        ${cta ? `<div class="cta"><h2>Our mission this week</h2><p class="meditation">${esc(cta)}</p></div>` : ""}`;
+    }
+    case "queen": {
+      const vrEn = `<div class="vr"><span><b>V.</b>Pray for us, O holy Mother of God.</span><span><b>R.</b>That we may be made worthy of the promises of Christ.</span></div>`;
+      const vrLa = `<div class="vr"><span><b>V.</b>Ora pro nobis, sancta Dei Genetrix.</span><span><b>R.</b>Ut digni efficiamur promissionibus Christi.</span></div>`;
+      if (S.lang==="en") return `<h1>Hail, Holy Queen</h1><div class="text">${paras(P.queen)}</div>${vrEn}`;
+      return `<h1>Salve Regina</h1><p class="en-sub">Hail, Holy Queen</p><div class="text">${paras(PL.queen)}</div>${vrLa}
+        ${S.lang==="both" ? `<div class="en-under">${paras(P.queen)}${vrEn}</div>` : ""}`;
+    }
+    case "saints": return `<p class="kicker">Asking the saints for their prayers</p>
+      <ul class="saints">${s.list.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
+    case "end": {
+      const sun = addDays(today, -today.getDay()), I = ["S","M","T","W","T","F","S"];
+      const week = I.map((l,d)=>{ const day=addDays(sun,d), k=iso(day), n=HIST[k]?.n||0;
+        return `<div><span class="cell l${lvl(n)}${+day===+today?" new":""}${day>today?" future":""}"></span>${l}</div>`; }).join("");
+      return `<h1>We have prayed the rosary together.</h1>
+        ${run.intention.trim() ? `<p class="offered">Offered for <b>${esc(run.intention.trim())}</b></p>` : ""}
+        <div class="week" role="img" aria-label="This week's prayer days">${week}</div>
+        <p class="note">Tap Finish to return home.</p>`;
+    }
+    default: {
+      const k = keyOf(s.text), note = s.note ? `<p class="kicker">${esc(s.note)}</p>` : "";
+      const count = s.count ? countHtml(s.count) : "";
+      const hint = s.count && s.decade===0 && s.count.i===1 && !store.get("familyRosary.tapped") ? `<p class="taphint">Tip: tap anywhere on the prayer to move to the next bead.</p>` : "";
+      if (!k || S.lang==="en") return `${note}<h1>${esc(s.title)}</h1>${count}${prayerText(k, s.text)}${hint}`;
+      return `${note}<h1>${esc(LT[k])}</h1><p class="en-sub">${esc(s.title)}</p>${count}${prayerText(k, PL[k])}
+        ${S.lang==="both" ? `<div class="en-under">${paras(s.text)}</div>` : ""}${hint}`;
+    }
+  }
+}
+
+function confirmPause(){
+  const d = document.createElement("div");
+  d.className = "sheet";
+  d.innerHTML = `<div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="xh">
+    <h2 id="xh">Pause the rosary?</h2><p class="hint">Your place is saved. Tap Continue on the home screen to pick up right here.</p>
+    <div class="row2"><button class="ghost" id="stay">Keep praying</button><button class="solid" id="leave">Pause</button></div></div>`;
+  document.body.appendChild(d);
+  d.querySelector("#stay").focus();
+  d.querySelector("#stay").onclick = ()=>d.remove();
+  d.querySelector("#leave").onclick = ()=>{ saveResume(); d.remove(); home(); };
+  d.onclick = e=>{ if(e.target===d) d.remove(); };
+}
+
+/* ---------- Settings ---------- */
+function settings(){
+  const d = document.createElement("div");
+  d.className = "settings";
+  const sw = (id, label, sub, on) => `<label class="opt" for="${id}"><span>${label}${sub?`<small>${sub}</small>`:""}</span><input type="checkbox" class="switch" id="${id}" ${on?"checked":""}></label>`;
+  const chips = (attr, opts, cur) => opts.map(([v,n])=>`<button class="chip" ${attr}="${v}" aria-pressed="${cur===v}">${n}</button>`).join("");
+  d.innerHTML = `
+    <div class="topbar"><h2 class="brand" style="font-size:1.4rem">Settings</h2><button class="donebtn" id="done">Done</button></div>
+    <div class="scroll">
+      <div class="group"><h3>Display</h3>
+        <div class="opt"><span>Appearance<small>Auto follows your phone's light or dark setting.</small></span></div>
+        <div class="sizes" role="group" aria-label="Appearance">${chips("data-look", [["auto","Auto"],["light","Light"],["night","Night"]], S.look)}</div>
+        <div class="opt"><span>Text size</span></div>
+        <div class="sizes" role="group" aria-label="Text size">${chips("data-size", [[0.9,"Smaller"],[1,"Standard"],[1.12,"Large"],[1.25,"Largest"]], S.size)}</div>
+        ${sw("sample","Preview prayer days with sample data","Fills the home screen squares with made-up days. Your real history isn't changed.", S.sample)}
+        ${sw("parts","Show Leader and All parts","Marks who says each half of the Hail Mary, Our Father, and Glory Be", S.parts)}
+      </div>
+      <div class="group"><h3>Prayer language</h3>
+        <label class="opt" for="lang" style="display:grid;gap:6px"><span>Prayers<small>Meditations, intentions, and your own prayers stay in English.</small></span>
+          <select id="lang"><option value="en">English</option><option value="la">Latin</option><option value="both">Latin with English below</option></select></label>
+      </div>
+      <div class="group"><h3>Seasons</h3>
+        <label class="opt" for="lent" style="display:grid;gap:6px"><span>During Lent</span>
+          <select id="lent"><option value="daily">Sorrowful every day</option><option value="sundays">Sorrowful on Sundays only</option><option value="standard">Follow the regular schedule</option></select></label>
+        <label class="opt" for="advent" style="display:grid;gap:6px"><span>During Advent</span>
+          <select id="advent"><option value="standard">Follow the regular schedule</option><option value="sundays">Joyful on Sundays only</option><option value="daily">Joyful every day</option></select></label>
+      </div>
+      <div class="group"><h3>Closing prayers</h3>
+        <p class="hint">Hail, Holy Queen and the closing prayer are always included.</p>
+        ${sw("pope","Prayers for the Pope's intentions","One Our Father, Hail Mary, and Glory Be", S.pope)}
+        ${sw("memorare","The Memorare","", S.memorare)}
+        ${sw("michael","Prayer to St. Michael","", S.michael)}
+      </div>
+      <div class="group"><h3>Saints to ask for prayers</h3>
+        ${sw("feastSaint","Today's feast day saint","Added automatically on feast days", S.feastSaint)}
+        ${DEFAULT_SAINTS.map((n,i)=>sw("saint"+i, n, "", S.saints[n])).join("")}
+        <label for="extraSaints" class="hint">Other saints, one per line</label>
+        <textarea id="extraSaints" placeholder="St. Gianna Molla">${esc(S.extraSaints)}</textarea>
+      </div>
+      <div class="group"><h3>Our family's prayers</h3>
+        <label for="custom" class="hint">Each prayer gets its own screen after the closing prayers. Leave a blank line between prayers.</label>
+        <textarea id="custom" placeholder="Lord, bless our family and our neighbors...">${esc(S.custom)}</textarea>
+      </div>
+    </div>`;
+  document.body.appendChild(d);
+  d.querySelector("#lent").value = S.lent; d.querySelector("#advent").value = S.advent; d.querySelector("#lang").value = S.lang;
+  d.querySelector("#lang").onchange = e => { S.lang=e.target.value; save(); };
+  const bind = (id, key) => d.querySelector("#"+id).onchange = e => { S[key]=e.target.checked; save(); };
+  ["sample","parts","pope","memorare","michael","feastSaint"].forEach(k=>bind(k,k));
+  DEFAULT_SAINTS.forEach((n,i)=> d.querySelector("#saint"+i).onchange = e => { S.saints[n]=e.target.checked; save(); });
+  const pick = (attr, key, conv) => d.querySelectorAll(`[${attr}]`).forEach(b=>b.onclick=()=>{ S[key]=conv(b.getAttribute(attr)); save(); applyLook();
+    d.querySelectorAll(`[${attr}]`).forEach(x=>x.setAttribute("aria-pressed", x===b)); });
+  pick("data-look","look",String); pick("data-size","size",Number);
+  d.querySelector("#lent").onchange = e => { S.lent=e.target.value; save(); };
+  d.querySelector("#advent").onchange = e => { S.advent=e.target.value; save(); };
+  d.querySelector("#extraSaints").oninput = e => { S.extraSaints=e.target.value; save(); };
+  d.querySelector("#custom").oninput = e => { S.custom=e.target.value; save(); };
+  d.querySelector("#done").onclick = () => { d.remove(); home(); };
+}
+
+/* ---------- Keep the screen awake while praying ---------- */
+async function requestWake(){ try{ wake = await navigator.wakeLock?.request("screen"); }catch(e){ wake=null; } }
+function releaseWake(){ try{ wake?.release(); }catch(e){} wake=null; }
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible" && run && document.getElementById("next")) requestWake(); });
+document.addEventListener("keydown", e=>{
+  if (!document.getElementById("next") || document.querySelector(".sheet") || e.target.closest?.("textarea,input,select")) return;
+  if (e.key==="ArrowRight" || e.key===" "){ e.preventDefault(); go(1); }
+  if (e.key==="ArrowLeft"){ e.preventDefault(); go(-1); }
+});
+window.addEventListener("resize", ()=>{ if(document.getElementById("track")) positionTrack(true); });
+
+applyLook();
+home();
+syncHistory();
+</script>
+<script>
+if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
